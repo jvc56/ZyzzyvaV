@@ -49,6 +49,7 @@ DEPENDPATH += build/moc
 SOURCES = \
     AboutDialog.cpp \
     AnalyzeQuizDialog.cpp \
+    AnalyzeQuizDialogSnapshot.cpp \
     Auxil.cpp \
     CardboxAddDialog.cpp \
     CardboxForm.cpp \
@@ -83,6 +84,7 @@ SOURCES = \
     QuizCanvas.cpp \
     QuizDatabase.cpp \
     QuizEngine.cpp \
+    QuizEngineSnapshot.cpp \
     QuizForm.cpp \
     QuizProgress.cpp \
     QuizSpec.cpp \

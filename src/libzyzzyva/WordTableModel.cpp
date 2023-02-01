@@ -210,6 +210,23 @@ WordTableModel::addWords(const QList<WordItem>& words)
 }
 
 //---------------------------------------------------------------------------
+//  deepCopyWordList
+//
+//! Deep copy the word list from the arg to this.
+//
+//! @param wtm the WordTableModel to copy to.
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+bool
+WordTableModel::deepCopyWordList(const QList<WordItem>& words)
+{
+    clear();
+    addWords(words);
+    return true;
+}
+
+
+//---------------------------------------------------------------------------
 //  removeWord
 //
 //! Add a word to the model.

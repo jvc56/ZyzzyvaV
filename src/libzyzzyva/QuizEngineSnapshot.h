@@ -1,10 +1,10 @@
 //---------------------------------------------------------------------------
-// QuizProgress.h
+// QuizEngineSnapshot.h
 //
-// A class to represent quiz progress.
+// A snapshot of a QuizEngine at a give point in time.
 //
 // Copyright 2015-2016 Twilight Century Computing.
-// Copyright 2005-2012 North American SCRABBLE Players Association.
+// Copyright 2004-2012 North American SCRABBLE Players Association.
 //
 // This file is part of Zyzzyva.
 //
@@ -23,36 +23,26 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef ZYZZYVA_QUIZ_PROGRESS_H
-#define ZYZZYVA_QUIZ_PROGRESS_H
+#ifndef ZYZZYVA_QUIZ_ENGINE_SNAPSHOT_H
+#define ZYZZYVA_QUIZ_ENGINE_SNAPSHOT_H
 
-#include <QDomElement>
-#include <QMap>
-#include <QSet>
+#include "QuizProgress.h"
 
-class QuizProgress
+class QuizEngineSnapshot
 {
     public:
-    QuizProgress() : question(0), correct(0), incorrect(0), missed(0),
-                     questionComplete(false) { }
-    ~QuizProgress() { }
+    QuizEngineSnapshot(QuizProgress* qp,
+    QSet<QString>* correctResponses,
+    QSet<QString>* correctUserResponses,
+    QStringList* incorrectUserResponses,
+    int qeQuizTotal,
+    int qeQuizCorrect,
+    int qeQuizIncorrect,
+    QStringList* qeQuizQuestions,
+    int qeQuestionIndex);
+    ~QuizEngineSnapshot() { }
 
-    bool isEmpty() const;
-
-    void setQuestion(int q) { question = q; }
-    void setCorrect(int c) { correct = c; }
-    void setIncorrect(int i) { incorrect = i; }
-    void setMissed(int m) { missed = m; }
-    void addIncorrect(const QString& word);
-    void addIncorrect(const QString& word, int count);
-    void removeIncorrect(const QString& word);
-    void addMissed(const QString& word);
-    void addMissed(const QString& word, int count);
-    void removeMissed(const QString& word);
-    void addQuestionCorrect(const QString& word);
-    void clearQuestionCorrect() { questionCorrectWords.clear(); }
-    void setQuestionComplete(bool b) { questionComplete = b; }
-
+    // Getter methods for progress
     int getQuestion() const { return question; }
     int getNumCorrect() const { return correct; }
     int getNumIncorrect() const { return incorrect; }
@@ -63,10 +53,18 @@ class QuizProgress
     QMap<QString, int> getIncorrect() const { return incorrectWords; }
     QMap<QString, int> getMissed() const { return missedWords; }
 
-    QDomElement asDomElement() const;
-    bool fromDomElement(const QDomElement& element);
+    // Getter methods for QuizEngine
+    QSet<QString> getCorrectResponses() const { return correctResponses; }
+    QSet<QString> getCorrectUserResponses() const { return correctUserResponses; }
+    QStringList getIncorrectUserResponses() const { return incorrectUserResponses; }
+    int getQuizTotal() const { return quizTotal; }
+    int getQuizCorrect() const { return quizCorrect; }
+    int getQuizIncorrect() const { return quizIncorrect; }
+    QStringList getQuizQuestions() const { return quizQuestions; }
+    int getQuestionIndex() const { return questionIndex; }
 
     private:
+    // Fields of QuizProgress
     int question;
     int correct;
     int incorrect;
@@ -75,7 +73,16 @@ class QuizProgress
     QSet<QString> questionCorrectWords;
     QMap<QString, int> incorrectWords;
     QMap<QString, int> missedWords;
+
+    // Fields of QuizEngine that are needed
+    QSet<QString> correctResponses;
+    QSet<QString> correctUserResponses;
+    QStringList incorrectUserResponses;
+    int quizTotal;
+    int quizCorrect;
+    int quizIncorrect;
+    QStringList quizQuestions;
+    int         questionIndex;
 };
 
-#endif // ZYZZYVA_QUIZ_PROGRESS_H
-
+#endif // ZYZZYVA_QUIZ_ENGINE_SNAPSHOT_H

@@ -140,6 +140,8 @@ class WordTableModel : public QAbstractTableModel
     void clearLastAddedIndex();
     int getAlphagramGroupsCount() const { return alphagramGroupsCount; }
     void setAlphagramsGroupCount(int numGroups) { alphagramGroupsCount = numGroups; }
+    QList<WordItem> getWordList() const { return wordList; }
+    bool deepCopyWordList(const QList<WordItem>& words);
 
     signals:
     void wordsChanged();

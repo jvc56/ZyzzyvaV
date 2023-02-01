@@ -46,3 +46,4 @@ Makefile*
 /ReverseWords/ReverseWords/bin/
 /ReverseWords/ReverseWords/obj/
 *.bak
+*.vscode

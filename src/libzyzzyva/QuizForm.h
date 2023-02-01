@@ -27,8 +27,10 @@
 #define ZYZZYVA_QUIZ_FORM_H
 
 #include "ActionForm.h"
+#include "AnalyzeQuizDialogSnapshot.h"
 #include "QuizTimerSpec.h"
 #include "QuizDatabase.h"
+#include "QuizEngineSnapshot.h"
 #include "QuizSpec.h"
 #include <QCheckBox>
 #include <QComboBox>
@@ -81,6 +83,7 @@ class QuizForm : public ActionForm
     void responseEntered();
     void letterOrderClicked();
     void newQuizClicked();
+    void previousQuestionClicked();
     void nextQuestionClicked();
     void checkResponseClicked();
     void markMissedClicked();
@@ -161,6 +164,7 @@ class QuizForm : public ActionForm
     QLabel*       letterOrderLabel;
     QCheckBox*    flashcardCbox;
     QCheckBox*    lexiconSymbolCbox;
+    ZPushButton*  previousQuestionButton;
     ZPushButton*  nextQuestionButton;
     ZPushButton*  checkResponseButton;
     ZPushButton*  markMissedButton;
@@ -192,6 +196,9 @@ class QuizForm : public ActionForm
     int currentDisplayAnswer;
 
     AnalyzeQuizDialog* analyzeDialog;
+
+    QList<QuizEngineSnapshot> quizEngineSnapshots;
+    QList<AnalyzeQuizDialogSnapshot> analyzeQuizDialogSnapshots;
 
     enum {
         QuestionNotMarked = 0,

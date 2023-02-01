@@ -27,6 +27,7 @@
 #ifndef ZYZZYVA_QUIZ_ENGINE_H
 #define ZYZZYVA_QUIZ_ENGINE_H
 
+#include "QuizEngineSnapshot.h"
 #include "QuizSpec.h"
 #include "Rand.h"
 #include <QSet>
@@ -75,9 +76,12 @@ class QuizEngine
     bool getQuestionComplete() const {
         return quizSpec.getProgress().getQuestionComplete(); }
     bool onLastQuestion() const;
+    bool onFirstQuestion() const;
     void setQuizSpecFilename(const QString& filename) {
         quizSpec.setFilename(filename);
     }
+    QuizEngineSnapshot getSnapshot();
+    bool restoreFromSnapshot(QuizEngineSnapshot* qes);
 
     private:
     void clearQuestion();

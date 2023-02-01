@@ -422,3 +422,33 @@ AnalyzeQuizDialog::moveCache()
     MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
     QApplication::restoreOverrideCursor();
 }
+
+//---------------------------------------------------------------------------
+//  getSnapshot
+//
+//! Gets a snapshot of the current analyze quiz dialog.
+//---------------------------------------------------------------------------
+AnalyzeQuizDialogSnapshot
+AnalyzeQuizDialog::getSnapshot()
+{
+    return AnalyzeQuizDialogSnapshot(missedModel->getWordList(), incorrectModel->getWordList(), missedCache, incorrectCache);
+}
+
+//---------------------------------------------------------------------------
+//  restoreFromSnapshot
+//
+//! Restore to the given snapshot.
+//
+//! @return true on success, false on failure
+//---------------------------------------------------------------------------
+bool
+AnalyzeQuizDialog::restoreFromSnapshot(AnalyzeQuizDialogSnapshot* aqds)
+{
+    missedModel->deepCopyWordList(aqds->getMissedModelWordList());
+    incorrectModel->deepCopyWordList(aqds->getIncorrectModelWordList());
+    missedCache.clear();
+    missedCache.unite(aqds->getMissedCache());
+    incorrectCache.clear();
+    incorrectCache.unite(aqds->getIncorrectCache());
+    return true;
+}

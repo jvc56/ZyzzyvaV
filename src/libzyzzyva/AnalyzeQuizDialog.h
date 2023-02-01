@@ -26,6 +26,7 @@
 #ifndef ZYZZYVA_ANALYZE_QUIZ_DIALOG_H
 #define ZYZZYVA_ANALYZE_QUIZ_DIALOG_H
 
+#include "AnalyzeQuizDialogSnapshot.h"
 #include <QDialog>
 #include <QLabel>
 #include <QSet>
@@ -49,6 +50,8 @@ class AnalyzeQuizDialog : public QDialog
     ~AnalyzeQuizDialog() { }
     WordTableView* getMissedView() { return missedView; }
     WordTableView* getIncorrectView() { return incorrectView; }
+    AnalyzeQuizDialogSnapshot getSnapshot();
+    bool restoreFromSnapshot(AnalyzeQuizDialogSnapshot* aqds);
 
     public slots:
     void newQuiz(const QuizSpec& spec);

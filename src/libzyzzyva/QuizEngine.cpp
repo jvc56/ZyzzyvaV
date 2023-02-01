@@ -25,6 +25,7 @@
 //---------------------------------------------------------------------------
 
 #include "QuizEngine.h"
+#include "QuizEngineSnapshot.h"
 #include "LetterBag.h"
 #include "MainSettings.h"
 #include "QuizDatabase.h"
@@ -330,6 +331,81 @@ QuizEngine::nextQuestion()
 }
 
 //---------------------------------------------------------------------------
+//  getSnapshot
+//
+//! Gets a snapshot of the current QuizEngine.
+//
+//! @return the QuizEngineSnapshot
+//---------------------------------------------------------------------------
+QuizEngineSnapshot
+QuizEngine::getSnapshot()
+{
+    QuizProgress qp = quizSpec.getProgress();
+    return QuizEngineSnapshot(&qp, &correctResponses, &correctUserResponses, &incorrectUserResponses, quizTotal, quizCorrect, quizIncorrect, &quizQuestions, questionIndex);
+}
+
+
+//---------------------------------------------------------------------------
+//  restoreFromSnapshot
+//
+//! Restore to the given snapshot.
+//
+//! @return true on success, false on failure
+//---------------------------------------------------------------------------
+bool
+QuizEngine::restoreFromSnapshot(QuizEngineSnapshot* qes)
+{
+    // Restore quiz engine to previous state
+    // Restore progress
+    QuizProgress progress = quizSpec.getProgress();
+    progress.setQuestion(qes->getQuestion());
+    progress.setCorrect(qes->getNumCorrect());
+    progress.setIncorrect(qes->getNumIncorrect());
+    progress.setMissed(qes->getNumMissed());
+    progress.setQuestionComplete(qes->getQuestionComplete());
+
+    progress.getQuestionCorrect().clear();
+    progress.getQuestionCorrect().unite(qes->getQuestionCorrect());
+
+    const QMap<QString, int> qesIncorrect = qes->getIncorrect();
+    progress.getIncorrect().clear();
+    QMap<QString, int>::const_iterator incorrectIter = qesIncorrect.constBegin();
+    while (incorrectIter != qesIncorrect.constEnd()) {
+        progress.getIncorrect().insert(incorrectIter.key(), incorrectIter.value());
+        ++incorrectIter;
+    }
+
+    const QMap<QString, int> qesMissed = qes->getMissed();
+    progress.getMissed().clear();
+    QMap<QString, int>::const_iterator missedIter = qesMissed.constBegin();
+    while (missedIter != qesMissed.constEnd()) {
+        progress.getMissed().insert(missedIter.key(), missedIter.value());
+        ++missedIter;
+    }
+
+    // Restore necessary QuizEngine fields
+    correctResponses.clear();
+    correctResponses.unite(qes->getCorrectResponses());
+
+    correctUserResponses.clear();
+    correctUserResponses.unite(qes->getCorrectUserResponses());
+
+    incorrectUserResponses.clear();
+    incorrectUserResponses.append(qes->getIncorrectUserResponses());
+
+    quizTotal = qes->getQuizTotal();
+    quizCorrect = qes->getQuizCorrect();
+    quizIncorrect = qes->getQuizIncorrect();
+
+    quizQuestions.clear();
+    quizQuestions.append(qes->getQuizQuestions());
+    questionIndex = qes->getQuestionIndex();
+
+    return true;
+}
+
+
+//---------------------------------------------------------------------------
 //  completeQuestion
 //
 //! Mark the current question as completed.
@@ -518,6 +594,20 @@ QuizEngine::onLastQuestion() const
 {
     return (questionIndex == int(quizQuestions.size() - 1));
 }
+
+//---------------------------------------------------------------------------
+//  onFirstQuestion
+//
+//! Determine whether the current quiz is on the first question.
+//
+//! @return true if on the first question, false otherwise
+//---------------------------------------------------------------------------
+bool
+QuizEngine::onFirstQuestion() const
+{
+    return (questionIndex == 0);
+}
+
 
 //---------------------------------------------------------------------------
 //  clearQuestion

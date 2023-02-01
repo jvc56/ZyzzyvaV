@@ -25,6 +25,7 @@
 
 #include "QuizForm.h"
 #include "AnalyzeQuizDialog.h"
+#include "AnalyzeQuizDialogSnapshot.h"
 #include "DefinitionLabel.h"
 #include "MainSettings.h"
 #include "MainWindow.h"
@@ -33,6 +34,7 @@
 #include "QuizCanvas.h"
 #include "QuizDatabase.h"
 #include "QuizEngine.h"
+#include "QuizEngineSnapshot.h"
 #include "QuizQuestionLabel.h"
 #include "WordEngine.h"
 #include "WordValidator.h"
@@ -289,12 +291,19 @@ QuizForm::QuizForm(WordEngine* we, QWidget* parent, Qt::WindowFlags f)
     buttonHlay->addLayout(buttonGlay);
 
     // Buttons
+    previousQuestionButton = new ZPushButton("Pre&vious");
+    Q_CHECK_PTR(previousQuestionButton);
+    previousQuestionButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(previousQuestionButton, SIGNAL(clicked()), SLOT(previousQuestionClicked()));
+    previousQuestionButton->setEnabled(false);
+    buttonGlay->addWidget(previousQuestionButton, 0, 0, Qt::AlignHCenter);
+
     nextQuestionButton = new ZPushButton("&Next");
     Q_CHECK_PTR(nextQuestionButton);
     nextQuestionButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(nextQuestionButton, SIGNAL(clicked()), SLOT(nextQuestionClicked()));
     nextQuestionButton->setEnabled(false);
-    buttonGlay->addWidget(nextQuestionButton, 0, 0, Qt::AlignHCenter);
+    buttonGlay->addWidget(nextQuestionButton, 0, 1, Qt::AlignHCenter);
 
     checkResponseButton = new ZPushButton("&Check Answers");
     Q_CHECK_PTR(checkResponseButton);
@@ -302,13 +311,13 @@ QuizForm::QuizForm(WordEngine* we, QWidget* parent, Qt::WindowFlags f)
     connect(checkResponseButton, SIGNAL(clicked()),
             SLOT(checkResponseClicked()));
     checkResponseButton->setEnabled(false);
-    buttonGlay->addWidget(checkResponseButton, 0, 1, Qt::AlignHCenter);
+    buttonGlay->addWidget(checkResponseButton, 0, 2, Qt::AlignHCenter);
 
     markMissedButton = new ZPushButton(MARK_MISSED_BUTTON);
     Q_CHECK_PTR(markMissedButton);
     markMissedButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(markMissedButton, SIGNAL(clicked()), SLOT(markMissedClicked()));
-    buttonGlay->addWidget(markMissedButton, 0, 2, Qt::AlignHCenter);
+    buttonGlay->addWidget(markMissedButton, 0, 3, Qt::AlignHCenter);
 
     newQuizButton = new ZPushButton("New &Quiz...");
     Q_CHECK_PTR(newQuizButton);
@@ -705,6 +714,10 @@ QuizForm::newQuiz(const QuizSpec& spec)
 
     setDetailsString(Auxil::lexiconToDetails(lexicon));
     setUnsavedChanges(spec.getFilename().isEmpty());
+
+    quizEngineSnapshots.prepend(quizEngine->getSnapshot());
+    analyzeQuizDialogSnapshots.prepend(analyzeDialog->getSnapshot());
+
     return true;
 }
 
@@ -972,6 +985,14 @@ QuizForm::moveToCardbox(int cardbox)
 void
 QuizForm::nextQuestionClicked()
 {
+    if (quizEngineSnapshots.length() != analyzeQuizDialogSnapshots.length()) {
+        QString caption = "Error tracking previous questions";
+        QString message = "Error tracking previous questions.";
+        message = Auxil::dialogWordWrap(message);
+        QMessageBox::warning(this, caption, message);
+    }
+    QuizEngineSnapshot qes = quizEngine->getSnapshot();
+    AnalyzeQuizDialogSnapshot aqds = analyzeDialog->getSnapshot();
     if (!quizEngine->nextQuestion()) {
         QString caption = "Error getting next question";
         QString message = "Error getting next question.";
@@ -982,7 +1003,56 @@ QuizForm::nextQuestionClicked()
     analyzeDialog->updateStats();
     if (quizEngine->getQuizSpec().getMethod() != QuizSpec::CardboxQuizMethod)
         setUnsavedChanges(true);
+
+    quizEngineSnapshots.prepend(quizEngine->getSnapshot());
+    analyzeQuizDialogSnapshots.prepend(analyzeDialog->getSnapshot());
+
+    if (quizEngineSnapshots.length() > 11) {
+        quizEngineSnapshots.removeLast();
+        analyzeQuizDialogSnapshots.removeLast();
+    }
 }
+
+//---------------------------------------------------------------------------
+//  previousQuestionClicked
+//
+//! Called when the New Question button is clicked.
+//---------------------------------------------------------------------------
+void
+QuizForm::previousQuestionClicked()
+{
+    if (quizEngineSnapshots.length() != analyzeQuizDialogSnapshots.length()) {
+        QString caption = "Error tracking previous questions";
+        QString message = "Error tracking previous questions.";
+        message = Auxil::dialogWordWrap(message);
+        QMessageBox::warning(this, caption, message);
+    }
+    
+    if (quizEngineSnapshots.empty()) {
+        QString caption = "No previous question";
+        QString message = "No previous question.";
+        message = Auxil::dialogWordWrap(message);
+        QMessageBox::warning(this, caption, message);
+    }
+
+    quizEngineSnapshots.removeFirst();
+    analyzeQuizDialogSnapshots.removeFirst();
+    QuizEngineSnapshot qes = quizEngineSnapshots.first();
+    AnalyzeQuizDialogSnapshot aqds = analyzeQuizDialogSnapshots.first();
+
+    if (!quizEngine->restoreFromSnapshot(&qes)) {
+        QString caption = "Error getting previous question";
+        QString message = "Error getting previous question.";
+        message = Auxil::dialogWordWrap(message);
+        QMessageBox::warning(this, caption, message);
+    }
+    startQuestion();
+    analyzeDialog->restoreFromSnapshot(&aqds);
+    analyzeDialog->updateStats();
+    if (quizEngine->getQuizSpec().getMethod() != QuizSpec::CardboxQuizMethod)
+        setUnsavedChanges(true);
+}
+
 
 //---------------------------------------------------------------------------
 //  checkResponseClicked
@@ -1278,6 +1348,7 @@ QuizForm::startQuestion()
     responseStatusLabel->setText(QString());
     checkResponseButton->setEnabled(true);
     markMissedButton->setText(MARK_MISSED_BUTTON);
+    previousQuestionButton->setEnabled(quizEngine->getQuestionIndex() != 0 && quizEngineSnapshots.length() > 1);
     nextQuestionButton->setEnabled(false);
     inputLine->setEnabled(true);
     selectInputArea();
@@ -1756,6 +1827,7 @@ QuizForm::keyPressEvent(QKeyEvent* event)
 {
     if (event->modifiers() == Qt::NoModifier) {
         switch (event->key()) {
+            case Qt::Key_V: previousQuestionButton->animateClick(); return;
             case Qt::Key_N: nextQuestionButton->animateClick(); return;
             case Qt::Key_C: checkResponseButton->animateClick(); return;
             case Qt::Key_M: markMissedButton->animateClick(); return;
