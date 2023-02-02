@@ -1827,6 +1827,7 @@ QuizForm::keyPressEvent(QKeyEvent* event)
 {
     if (event->modifiers() == Qt::NoModifier) {
         switch (event->key()) {
+            case Qt::Key_J: previousQuestionButton->animateClick(); return;
             case Qt::Key_V: previousQuestionButton->animateClick(); return;
             case Qt::Key_N: nextQuestionButton->animateClick(); return;
             case Qt::Key_C: checkResponseButton->animateClick(); return;

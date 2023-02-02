@@ -50,7 +50,7 @@ ZPushButton::init()
 void
 ZPushButton::keyPressEvent(QKeyEvent* e)
 {
-    if (e && ((e->key() == Qt::Key_Return) || (e->key() == Qt::Key_Enter)))
+    if (e && ((e->key() == Qt::Key_Return) || (e->key() == Qt::Key_Enter) || (e->key() == Qt::Key_Comma)))
         animateClick();
     else
         QPushButton::keyPressEvent(e);
