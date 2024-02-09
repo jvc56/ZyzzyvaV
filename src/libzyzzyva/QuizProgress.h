@@ -45,9 +45,11 @@ class QuizProgress
     void setMissed(int m) { missed = m; }
     void addIncorrect(const QString& word);
     void addIncorrect(const QString& word, int count);
+    void setIncorrect(const QMap<QString, int>& incorrectWordsArg);
     void removeIncorrect(const QString& word);
     void addMissed(const QString& word);
     void addMissed(const QString& word, int count);
+    void setMissed(const QMap<QString, int>& missedWordsArg);
     void removeMissed(const QString& word);
     void addQuestionCorrect(const QString& word);
     void clearQuestionCorrect() { questionCorrectWords.clear(); }

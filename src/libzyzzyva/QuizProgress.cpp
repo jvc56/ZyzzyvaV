@@ -89,6 +89,21 @@ QuizProgress::addIncorrect(const QString& word, int count)
 }
 
 //---------------------------------------------------------------------------
+//  setIncorrect
+//
+//! Sets the incorrect response with another QMap.
+//
+//! @param word the incorrect response word
+//! @param count the number of times the response was incorrect
+//---------------------------------------------------------------------------
+void
+QuizProgress::setIncorrect(const QMap<QString, int>& incorrectWordsArg)
+{
+    incorrectWords = incorrectWordsArg;
+    incorrectWords.detach();
+}
+
+//---------------------------------------------------------------------------
 //  removeIncorrect
 //
 //! Remove a incorrect response.
@@ -135,6 +150,21 @@ QuizProgress::addMissed(const QString& word, int count)
 {
     missedWords[word] = count;
     missed += count;
+}
+
+//---------------------------------------------------------------------------
+//  setMissed
+//
+//! Sets the missed response with another QMap.
+//
+//! @param word the missed response word
+//! @param count the number of times the response was missed
+//---------------------------------------------------------------------------
+void
+QuizProgress::setMissed(const QMap<QString, int>& missedWordsArg)
+{
+    missedWords = missedWordsArg;
+    missedWords.detach();
 }
 
 //---------------------------------------------------------------------------

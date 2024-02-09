@@ -367,22 +367,8 @@ QuizEngine::restoreFromSnapshot(QuizEngineSnapshot* qes)
     progress.getQuestionCorrect().clear();
     progress.getQuestionCorrect().unite(qes->getQuestionCorrect());
 
-    const QMap<QString, int> qesIncorrect = qes->getIncorrect();
-    progress.getIncorrect().clear();
-    QMap<QString, int>::const_iterator incorrectIter = qesIncorrect.constBegin();
-    while (incorrectIter != qesIncorrect.constEnd()) {
-        progress.getIncorrect().insert(incorrectIter.key(), incorrectIter.value());
-        ++incorrectIter;
-    }
-
-    const QMap<QString, int> qesMissed = qes->getMissed();
-    progress.getMissed().clear();
-    QMap<QString, int>::const_iterator missedIter = qesMissed.constBegin();
-    while (missedIter != qesMissed.constEnd()) {
-        progress.getMissed().insert(missedIter.key(), missedIter.value());
-        ++missedIter;
-    }
-
+    progress.setIncorrect(qes->getIncorrect());
+    progress.setMissed(qes->getMissed());
     // Restore necessary QuizEngine fields
     correctResponses.clear();
     correctResponses.unite(qes->getCorrectResponses());
