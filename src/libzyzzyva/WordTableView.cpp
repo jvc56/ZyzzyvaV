@@ -125,13 +125,40 @@ WordTableView::resizeItemsRecursively()
 //---------------------------------------------------------------------------
 //  resizeItemsToContents
 //
-//! Resize all columns to fit the model contents.
+//! Resize all middle columns to fit the model contents while the
+//! first and last columns take up the remaining space.
 //---------------------------------------------------------------------------
 void
 WordTableView::resizeItemsToContents()
 {
-    for (int i = 0; i < model()->columnCount(); ++i)
+    int numColumns = model()->columnCount();
+
+    // Calculate the total width occupied by content in non-edge columns
+    int totalContentWidth = 0;
+    for (int i = 1; i < numColumns - 1; ++i) {
+        totalContentWidth += columnWidth(i);
+    }
+
+    // Calculate the width available for the edge columns
+    int edgeColumnsWidth = viewport()->width() - totalContentWidth;
+
+    // Calculate the width for each edge column
+    int edgeColumnWidth = edgeColumnsWidth / 3;
+
+    // Resize first, second, and last columns
+    resizeColumnToContents(0);
+    resizeColumnToContents(1);
+    resizeColumnToContents(numColumns - 1);
+
+    // Set the width of the first, second, and last columns to the calculated width
+    setColumnWidth(0, edgeColumnWidth);
+    setColumnWidth(1, edgeColumnWidth);
+    setColumnWidth(numColumns - 1, edgeColumnWidth);
+
+    // Resize other columns to fit the content
+    for (int i = 2; i < numColumns - 1; ++i) {
         resizeColumnToContents(i);
+    }
 }
 
 //----------------------------------------------------------------------------
