@@ -29,7 +29,8 @@
 #include <QColor>
 #include <QString>
 
-namespace Defs {
+namespace Defs
+{
     const QString ZYZZYVA_VERSION = "5.2.0";
     const int CURRENT_DATABASE_VERSION = 4;
     const QString IMPORT_CHOOSER_TITLE = "Choose a Word List";
@@ -47,8 +48,8 @@ namespace Defs {
     const QString QUIZ_LETTERS_RANDOM = "Random";
     const QString QUIZ_LETTERS_VOWELS_FIRST = "Vowels First";
     const QString QUIZ_LETTERS_CONSONANTS_FIRST = "Consonants First";
-    const QString LEXICON_CSW21 = "CSW21";
+    const QString LEXICON_CSW24 = "CSW24";
     const QString LEXICON_CUSTOM = "Custom";
- }
+}
 
 #endif // ZYZZYVA_DEFS_H

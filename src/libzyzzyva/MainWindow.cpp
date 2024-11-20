@@ -33,7 +33,7 @@
 #include "DatabaseRebuildDialog.h"
 #include "DefinitionDialog.h"
 #include "DefineForm.h"
-//#include "HelpDialog.h"
+// #include "HelpDialog.h"
 #include "IntroForm.h"
 #include "JudgeDialog.h"
 #include "JudgeSelectDialog.h"
@@ -67,7 +67,7 @@
 
 #include "LetterBag.h"
 
-MainWindow* MainWindow::instance = 0;
+MainWindow *MainWindow::instance = 0;
 
 const QString APPLICATION_TITLE = "Collins Zyzzyva 5.2.0";
 
@@ -95,31 +95,31 @@ using namespace Defs;
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WindowFlags f)
+MainWindow::MainWindow(QWidget *parent, QSplashScreen *splash, Qt::WindowFlags f)
     : QMainWindow(parent, f), splashScreen(splash),
       wordEngine(new WordEngine()), settingsDialog(new SettingsDialog(this)),
-      aboutDialog(new AboutDialog(this))//,
-      //helpDialog(new HelpDialog(QString(), this))
+      aboutDialog(new AboutDialog(this)) //,
+                                         // helpDialog(new HelpDialog(QString(), this))
 {
     setSplashMessage("Creating interface...", SPLASH_MESSAGE_COLOR);
-    //printf("%d\n", qApp->cursorFlashTime());
-    // (JGM) Hack to properly display the cursor on Windows (7-specific?) when cursor blink is turned
-    // off.  Qt 5.4/5.5 thinks the value is -2ms instead of 0ms, causing inconsistent cursor display
-    // across different GUI events.  Blinkophiles won't notice a 2ms difference in the blink rate when
-    // using this application.
-    // (JGM) As of Qt 5.6.0, hack is no longer needed.
-    //qApp->setCursorFlashTime(qApp->cursorFlashTime() + 2);
-    //printf("%d\n", qApp->cursorFlashTime());
+    // printf("%d\n", qApp->cursorFlashTime());
+    //  (JGM) Hack to properly display the cursor on Windows (7-specific?) when cursor blink is turned
+    //  off.  Qt 5.4/5.5 thinks the value is -2ms instead of 0ms, causing inconsistent cursor display
+    //  across different GUI events.  Blinkophiles won't notice a 2ms difference in the blink rate when
+    //  using this application.
+    //  (JGM) As of Qt 5.6.0, hack is no longer needed.
+    // qApp->setCursorFlashTime(qApp->cursorFlashTime() + 2);
+    // printf("%d\n", qApp->cursorFlashTime());
 
     // File Menu
-    QMenu* fileMenu = menuBar()->addMenu("&File");
+    QMenu *fileMenu = menuBar()->addMenu("&File");
     Q_CHECK_PTR(fileMenu);
 
     // Test action (only for testing things out)
-    //QAction* testAction = new QAction("&Test", this);
-    //Q_CHECK_PTR(testAction);
-    //connect(testAction, SIGNAL(triggered()), SLOT(doTest()));
-    //fileMenu->addAction(testAction);
+    // QAction* testAction = new QAction("&Test", this);
+    // Q_CHECK_PTR(testAction);
+    // connect(testAction, SIGNAL(triggered()), SLOT(doTest()));
+    // fileMenu->addAction(testAction);
 
     // Save
     saveAction = new QAction("&Save", this);
@@ -142,43 +142,43 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WindowFlags f
     fileMenu->addSeparator();
 
     // New Search
-    QAction* newSearchAction = new QAction("&Search", this);
+    QAction *newSearchAction = new QAction("&Search", this);
     Q_CHECK_PTR(newSearchAction);
     newSearchAction->setIcon(QIcon(":/search-icon"));
     connect(newSearchAction, SIGNAL(triggered()), SLOT(newSearchForm()));
     fileMenu->addAction(newSearchAction);
 
     // New Quiz
-    QAction* newQuizAction = new QAction("Qui&z...", this);
+    QAction *newQuizAction = new QAction("Qui&z...", this);
     Q_CHECK_PTR(newQuizAction);
     newQuizAction->setIcon(QIcon(":/quiz-icon"));
     connect(newQuizAction, SIGNAL(triggered()), SLOT(newQuizFormInteractive()));
     fileMenu->addAction(newQuizAction);
 
     // New Cardbox
-    QAction* newCardboxAction = new QAction("&Cardbox", this);
+    QAction *newCardboxAction = new QAction("&Cardbox", this);
     Q_CHECK_PTR(newCardboxAction);
     newCardboxAction->setIcon(QIcon(":/cardbox-icon"));
     connect(newCardboxAction, SIGNAL(triggered()), SLOT(newCardboxForm()));
     fileMenu->addAction(newCardboxAction);
 
     // New Crossword Game
-    //QAction* newCrosswordGameAction = new QAction("Crossword &Game", this);
-    //Q_CHECK_PTR(newCrosswordGameAction);
-    //newCrosswordGameAction->setIcon(QIcon(":/define-icon"));
-    //connect(newCrosswordGameAction, SIGNAL(triggered()),
+    // QAction* newCrosswordGameAction = new QAction("Crossword &Game", this);
+    // Q_CHECK_PTR(newCrosswordGameAction);
+    // newCrosswordGameAction->setIcon(QIcon(":/define-icon"));
+    // connect(newCrosswordGameAction, SIGNAL(triggered()),
     //         SLOT(newCrosswordGameForm()));
-    //fileMenu->addAction(newCrosswordGameAction);
+    // fileMenu->addAction(newCrosswordGameAction);
 
     // New Definition
-    QAction* newDefinitionAction = new QAction("&Definition", this);
+    QAction *newDefinitionAction = new QAction("&Definition", this);
     Q_CHECK_PTR(newDefinitionAction);
     newDefinitionAction->setIcon(QIcon(":/define-icon"));
     connect(newDefinitionAction, SIGNAL(triggered()), SLOT(newDefineForm()));
     fileMenu->addAction(newDefinitionAction);
 
     // New Word Judge
-    QAction* newJudgeAction = new QAction("Word &Judge", this);
+    QAction *newJudgeAction = new QAction("Word &Judge", this);
     Q_CHECK_PTR(newJudgeAction);
     newJudgeAction->setIcon(QIcon(":/judge-icon"));
     connect(newJudgeAction, SIGNAL(triggered()), SLOT(doJudgeAction()));
@@ -206,7 +206,7 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WindowFlags f
     fileMenu->addAction(closeTabAction);
 
     // Quit
-    QAction* quitAction = new QAction("&Exit", this);
+    QAction *quitAction = new QAction("&Exit", this);
     Q_CHECK_PTR(quitAction);
     quitAction->setEnabled(true);
     quitAction->setShortcut(QString("Ctrl+Q"));
@@ -214,28 +214,28 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WindowFlags f
     fileMenu->addAction(quitAction);
 
     // Word Menu
-    QMenu* wordMenu = menuBar()->addMenu("&Word");
+    QMenu *wordMenu = menuBar()->addMenu("&Word");
     Q_CHECK_PTR(wordMenu);
 
     // Word Definition
-    QAction* viewDefinitionAction = new QAction("&Definition...", this);
+    QAction *viewDefinitionAction = new QAction("&Definition...", this);
     Q_CHECK_PTR(viewDefinitionAction);
     connect(viewDefinitionAction, SIGNAL(triggered()),
-             SLOT(viewDefinition()));
+            SLOT(viewDefinition()));
     wordMenu->addAction(viewDefinitionAction);
 
-    QSignalMapper* wordMapper = new QSignalMapper(this);
+    QSignalMapper *wordMapper = new QSignalMapper(this);
     Q_CHECK_PTR(wordMapper);
 
     // Word Anagrams
-    QAction* viewAnagramsAction = new QAction("&Anagrams...", this);
+    QAction *viewAnagramsAction = new QAction("&Anagrams...", this);
     Q_CHECK_PTR(viewAnagramsAction);
     connect(viewAnagramsAction, SIGNAL(triggered()), wordMapper, SLOT(map()));
     wordMapper->setMapping(viewAnagramsAction, VariationAnagrams);
     wordMenu->addAction(viewAnagramsAction);
 
     // Word Subanagrams
-    QAction* viewSubanagramsAction = new QAction("&Subanagrams...", this);
+    QAction *viewSubanagramsAction = new QAction("&Subanagrams...", this);
     Q_CHECK_PTR(viewSubanagramsAction);
     connect(viewSubanagramsAction, SIGNAL(triggered()),
             wordMapper, SLOT(map()));
@@ -243,14 +243,14 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WindowFlags f
     wordMenu->addAction(viewSubanagramsAction);
 
     // Word Hooks
-    QAction* viewHooksAction = new QAction("&Hooks...", this);
+    QAction *viewHooksAction = new QAction("&Hooks...", this);
     Q_CHECK_PTR(viewHooksAction);
     connect(viewHooksAction, SIGNAL(triggered()), wordMapper, SLOT(map()));
     wordMapper->setMapping(viewHooksAction, VariationHooks);
     wordMenu->addAction(viewHooksAction);
 
     // Word Extensions
-    QAction* viewExtensionsAction = new QAction("&Extensions...", this);
+    QAction *viewExtensionsAction = new QAction("&Extensions...", this);
     Q_CHECK_PTR(viewExtensionsAction);
     connect(viewExtensionsAction, SIGNAL(triggered()),
             wordMapper, SLOT(map()));
@@ -258,7 +258,7 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WindowFlags f
     wordMenu->addAction(viewExtensionsAction);
 
     // Word Anagram Hooks
-    QAction* viewAnagramHooksAction = new QAction("Anagram Hoo&ks...", this);
+    QAction *viewAnagramHooksAction = new QAction("Anagram Hoo&ks...", this);
     Q_CHECK_PTR(viewAnagramHooksAction);
     connect(viewAnagramHooksAction, SIGNAL(triggered()),
             wordMapper, SLOT(map()));
@@ -266,7 +266,7 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WindowFlags f
     wordMenu->addAction(viewAnagramHooksAction);
 
     // Word Blank Anagrams
-    QAction* viewBlankAnagramsAction = new QAction("&Blank Anagrams...", this);
+    QAction *viewBlankAnagramsAction = new QAction("&Blank Anagrams...", this);
     Q_CHECK_PTR(viewBlankAnagramsAction);
     connect(viewBlankAnagramsAction, SIGNAL(triggered()),
             wordMapper, SLOT(map()));
@@ -274,7 +274,7 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WindowFlags f
     wordMenu->addAction(viewBlankAnagramsAction);
 
     // Word Blank Matches
-    QAction* viewBlankMatchesAction = new QAction("Blank &Matches...", this);
+    QAction *viewBlankMatchesAction = new QAction("Blank &Matches...", this);
     Q_CHECK_PTR(viewBlankMatchesAction);
     connect(viewBlankMatchesAction, SIGNAL(triggered()),
             wordMapper, SLOT(map()));
@@ -282,7 +282,7 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WindowFlags f
     wordMenu->addAction(viewBlankMatchesAction);
 
     // Word Transpositions
-    QAction* viewTranspositionsAction = new QAction("&Transpositions...", this);
+    QAction *viewTranspositionsAction = new QAction("&Transpositions...", this);
     Q_CHECK_PTR(viewTranspositionsAction);
     connect(viewTranspositionsAction, SIGNAL(triggered()),
             wordMapper, SLOT(map()));
@@ -293,35 +293,36 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WindowFlags f
     connect(wordMapper, SIGNAL(mapped(int)), SLOT(viewVariation(int)));
 
     // Tools Menu
-    QMenu* toolsMenu = menuBar()->addMenu("&Tools");
+    QMenu *toolsMenu = menuBar()->addMenu("&Tools");
     Q_CHECK_PTR(toolsMenu);
 
-    QAction* rebuildDatabaseAction = new QAction("Rebuild &Database...", this);
+    QAction *rebuildDatabaseAction = new QAction("Rebuild &Database...", this);
     Q_CHECK_PTR(rebuildDatabaseAction);
     connect(rebuildDatabaseAction, SIGNAL(triggered()),
             SLOT(rebuildDatabaseRequested()));
     toolsMenu->addAction(rebuildDatabaseAction);
 
-    QAction* rescheduleCardboxAction = new QAction("Reschedule &Cardbox "
-                                                   "Contents...", this);
+    QAction *rescheduleCardboxAction = new QAction("Reschedule &Cardbox "
+                                                   "Contents...",
+                                                   this);
     Q_CHECK_PTR(rescheduleCardboxAction);
     connect(rescheduleCardboxAction, SIGNAL(triggered()),
             SLOT(rescheduleCardboxRequested()));
     toolsMenu->addAction(rescheduleCardboxAction);
 
     // Preferences
-    QAction* editPrefsAction = new QAction("&Preferences", this);
+    QAction *editPrefsAction = new QAction("&Preferences", this);
     Q_CHECK_PTR(editPrefsAction);
     editPrefsAction->setIcon(QIcon(":/preferences-icon"));
     connect(editPrefsAction, SIGNAL(triggered()), SLOT(editSettings()));
     toolsMenu->addAction(editPrefsAction);
 
     // Help Menu
-    QMenu* helpMenu = menuBar()->addMenu("&Help");
+    QMenu *helpMenu = menuBar()->addMenu("&Help");
     Q_CHECK_PTR(helpMenu);
 
     // Help
-    QAction* helpAction = new QAction("&Help", this);
+    QAction *helpAction = new QAction("&Help", this);
     Q_CHECK_PTR(helpAction);
     helpAction->setIcon(QIcon(":/help-icon"));
     // Start using "Welcome" dialog solely for providing help!
@@ -329,13 +330,13 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WindowFlags f
     helpMenu->addAction(helpAction);
 
     // About
-    QAction* aboutAction = new QAction("&About", this);
+    QAction *aboutAction = new QAction("&About", this);
     Q_CHECK_PTR(aboutAction);
     connect(aboutAction, SIGNAL(triggered()), SLOT(displayAbout()));
     helpMenu->addAction(aboutAction);
 
     // Tool Bar
-    QToolBar* toolbar = new QToolBar;
+    QToolBar *toolbar = new QToolBar;
     Q_CHECK_PTR(toolbar);
     toolbar->setIconSize(QSize(36, 36));
     // (JGM) Hacky, for disallowing the toolbar QActions' mnemonics to interfere with form mnemonics in Qt5.
@@ -348,23 +349,23 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WindowFlags f
     connect(toolbarSaveAsAction, SIGNAL(triggered()), SLOT(doSaveAction()));
     toolbar->addAction(toolbarSaveAsAction);
     toolbar->addSeparator();
-    QAction* toolbarSearchAction = new QAction("Search", this);
+    QAction *toolbarSearchAction = new QAction("Search", this);
     copyQActionPartial(newSearchAction, toolbarSearchAction);
     connect(toolbarSearchAction, SIGNAL(triggered()), SLOT(newSearchForm()));
     toolbar->addAction(toolbarSearchAction);
-    QAction* toolbarQuizAction = new QAction("Quiz", this);
+    QAction *toolbarQuizAction = new QAction("Quiz", this);
     copyQActionPartial(newQuizAction, toolbarQuizAction);
     connect(toolbarQuizAction, SIGNAL(triggered()), SLOT(newQuizFormInteractive()));
     toolbar->addAction(toolbarQuizAction);
-    QAction* toolbarCardboxAction = new QAction("Cardbox", this);
+    QAction *toolbarCardboxAction = new QAction("Cardbox", this);
     copyQActionPartial(newCardboxAction, toolbarCardboxAction);
     connect(toolbarCardboxAction, SIGNAL(triggered()), SLOT(newCardboxForm()));
     toolbar->addAction(toolbarCardboxAction);
-    QAction* toolbarDefinitionAction = new QAction("Definition", this);
+    QAction *toolbarDefinitionAction = new QAction("Definition", this);
     copyQActionPartial(newDefinitionAction, toolbarDefinitionAction);
     connect(toolbarDefinitionAction, SIGNAL(triggered()), SLOT(newDefineForm()));
     toolbar->addAction(toolbarDefinitionAction);
-    QAction* toolbarJudgeAction = new QAction("Word Judge", this);
+    QAction *toolbarJudgeAction = new QAction("Word Judge", this);
     copyQActionPartial(newJudgeAction, toolbarJudgeAction);
     connect(toolbarJudgeAction, SIGNAL(triggered()), SLOT(doJudgeAction()));
     toolbar->addAction(toolbarJudgeAction);
@@ -374,12 +375,12 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WindowFlags f
     connect(toolbarPrintAction, SIGNAL(triggered()), SLOT(doPrintAction()));
     toolbar->addAction(toolbarPrintAction);
     toolbar->addSeparator();
-    QAction* toolbarEditPrefsAction = new QAction("Preferences", this);
+    QAction *toolbarEditPrefsAction = new QAction("Preferences", this);
     copyQActionPartial(editPrefsAction, toolbarEditPrefsAction);
     connect(toolbarEditPrefsAction, SIGNAL(triggered()), SLOT(editSettings()));
     toolbar->addAction(toolbarEditPrefsAction);
     toolbar->addSeparator();
-    QAction* toolbarHelpAction = new QAction("Help", this);
+    QAction *toolbarHelpAction = new QAction("Help", this);
     copyQActionPartial(helpAction, toolbarHelpAction);
     // Start using "Welcome" dialog solely for providing help!
     connect(toolbarHelpAction, SIGNAL(triggered()), SLOT(newIntroForm()));
@@ -389,7 +390,7 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WindowFlags f
     tabStack = new QTabWidget(this);
     Q_CHECK_PTR(tabStack);
     connect(tabStack, SIGNAL(currentChanged(int)),
-             SLOT(currentTabChanged(int)));
+            SLOT(currentTabChanged(int)));
 
     closeButton = new QToolButton(tabStack);
     Q_CHECK_PTR(closeButton);
@@ -448,8 +449,7 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WindowFlags f
 //
 //! @param filename the filename
 //---------------------------------------------------------------------------
-void
-MainWindow::fileOpenRequested(const QString& filename)
+void MainWindow::fileOpenRequested(const QString &filename)
 {
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
@@ -468,10 +468,9 @@ MainWindow::fileOpenRequested(const QString& filename)
 //
 //! @param args a list of arguments
 //---------------------------------------------------------------------------
-void
-MainWindow::processArguments(const QStringList& args)
+void MainWindow::processArguments(const QStringList &args)
 {
-    foreach (const QString& arg, args)
+    foreach (const QString &arg, args)
         fileOpenRequested(arg);
 }
 
@@ -481,8 +480,7 @@ MainWindow::processArguments(const QStringList& args)
 //! Try automatically importing a lexicon, if the user has enabled it in
 //! preferences.
 //---------------------------------------------------------------------------
-void
-MainWindow::tryAutoImport()
+void MainWindow::tryAutoImport()
 {
     if (!MainSettings::getUseAutoImport())
         return;
@@ -492,8 +490,9 @@ MainWindow::tryAutoImport()
     // If no auto import lexicons are set, prompt the user with a lexicon
     // selection dialog
     QStringList lexicons = MainSettings::getAutoImportLexicons();
-    if (lexicons.isEmpty()) {
-        LexiconSelectDialog* dialog = new LexiconSelectDialog;
+    if (lexicons.isEmpty())
+    {
+        LexiconSelectDialog *dialog = new LexiconSelectDialog;
         Q_CHECK_PTR(dialog);
 
         QString defaultLexicon = MainSettings::getDefaultLexicon();
@@ -503,7 +502,8 @@ MainWindow::tryAutoImport()
         dialog->setDefaultLexicon(defaultLexicon);
 
         int code = dialog->exec();
-        if (code == QDialog::Accepted) {
+        if (code == QDialog::Accepted)
+        {
             lexicons = dialog->getImportLexicons();
             MainSettings::setAutoImportLexicons(lexicons);
             MainSettings::setDefaultLexicon(dialog->getDefaultLexicon());
@@ -516,9 +516,10 @@ MainWindow::tryAutoImport()
 
     // FIXME: This should not be part of the MainWindow class.  Lexicons (and
     // mapping lexicons to actual files) should be handled by someone else.
-    QStringListIterator it (lexicons);
-    while (it.hasNext()) {
-        const QString& lexicon = it.next();
+    QStringListIterator it(lexicons);
+    while (it.hasNext())
+    {
+        const QString &lexicon = it.next();
         importLexicon(lexicon);
     }
 }
@@ -529,16 +530,16 @@ MainWindow::tryAutoImport()
 //! Try to connect to databases, but do not prompt the user to create ones
 //! that do not exist or otherwise cannot be opened.
 //---------------------------------------------------------------------------
-void
-MainWindow::tryConnectToDatabases()
+void MainWindow::tryConnectToDatabases()
 {
     if (!MainSettings::getUseAutoImport())
         return;
 
     QStringList lexicons = MainSettings::getAutoImportLexicons();
-    QStringListIterator it (lexicons);
-    while (it.hasNext()) {
-        const QString& lexicon = it.next();
+    QStringListIterator it(lexicons);
+    while (it.hasNext())
+    {
+        const QString &lexicon = it.next();
         int error = tryConnectToDatabase(lexicon);
         if (error != DbNoError)
             dbErrors.insert(lexicon, error);
@@ -551,8 +552,7 @@ MainWindow::tryConnectToDatabases()
 //! Try to connect to databases, but do not prompt the user to create ones
 //! that do not exist.
 //---------------------------------------------------------------------------
-void
-MainWindow::processDatabaseErrors()
+void MainWindow::processDatabaseErrors()
 {
     if (dbErrors.isEmpty())
         return;
@@ -574,10 +574,11 @@ MainWindow::processDatabaseErrors()
                         "Lexicon symbols need to be updated");
 
     QString actionText;
-    QMapIterator<QString, int> it (dbErrors);
-    while (it.hasNext()) {
+    QMapIterator<QString, int> it(dbErrors);
+    while (it.hasNext())
+    {
         it.next();
-        const QString& lexicon = it.key();
+        const QString &lexicon = it.key();
         int error = it.value();
         actionText += lexicon + " - " + errorActions.value(error) + "\n";
     }
@@ -598,11 +599,10 @@ MainWindow::processDatabaseErrors()
 //
 //! Allow the user to import a word list from a file.
 //---------------------------------------------------------------------------
-void
-MainWindow::importInteractive()
+void MainWindow::importInteractive()
 {
     QString file = QFileDialog::getOpenFileName(this, IMPORT_CHOOSER_TITLE,
-        QDir::current().path(), "All Files (*.*)");
+                                                QDir::current().path(), "All Files (*.*)");
 
     if (file.isNull())
         return;
@@ -620,13 +620,13 @@ MainWindow::importInteractive()
 //
 //! Create a new quiz form interactively.
 //---------------------------------------------------------------------------
-void
-MainWindow::newQuizFormInteractive()
+void MainWindow::newQuizFormInteractive()
 {
-    NewQuizDialog* dialog = new NewQuizDialog(this);
+    NewQuizDialog *dialog = new NewQuizDialog(this);
     Q_CHECK_PTR(dialog);
     int code = dialog->exec();
-    if (code == QDialog::Accepted) {
+    if (code == QDialog::Accepted)
+    {
         newQuizForm(dialog->getQuizSpec());
     }
     delete dialog;
@@ -638,14 +638,14 @@ MainWindow::newQuizFormInteractive()
 //! Create a new quiz form interactively, with the new quiz dialog initialized
 //! from a quiz specification.
 //---------------------------------------------------------------------------
-void
-MainWindow::newQuizFormInteractive(const QuizSpec& quizSpec)
+void MainWindow::newQuizFormInteractive(const QuizSpec &quizSpec)
 {
-    NewQuizDialog* dialog = new NewQuizDialog(this);
+    NewQuizDialog *dialog = new NewQuizDialog(this);
     Q_CHECK_PTR(dialog);
     dialog->setQuizSpec(quizSpec);
     int code = dialog->exec();
-    if (code == QDialog::Accepted) {
+    if (code == QDialog::Accepted)
+    {
         newQuizForm(dialog->getQuizSpec());
     }
     delete dialog;
@@ -659,14 +659,14 @@ MainWindow::newQuizFormInteractive(const QuizSpec& quizSpec)
 //
 //! @param quizSpec the quiz specification
 //---------------------------------------------------------------------------
-void
-MainWindow::newQuizForm(const QuizSpec& quizSpec)
+void MainWindow::newQuizForm(const QuizSpec &quizSpec)
 {
-    QuizForm* form = new QuizForm(wordEngine);
+    QuizForm *form = new QuizForm(wordEngine);
     Q_CHECK_PTR(form);
     form->setTileTheme(MainSettings::getTileTheme());
     bool ok = form->newQuiz(quizSpec);
-    if (!ok) {
+    if (!ok)
+    {
         delete form;
         return;
     }
@@ -678,10 +678,9 @@ MainWindow::newQuizForm(const QuizSpec& quizSpec)
 //
 //! Create a new search form.
 //---------------------------------------------------------------------------
-void
-MainWindow::newSearchForm()
+void MainWindow::newSearchForm()
 {
-    SearchForm* form = new SearchForm(wordEngine);
+    SearchForm *form = new SearchForm(wordEngine);
     Q_CHECK_PTR(form);
     newTab(form);
 }
@@ -691,10 +690,9 @@ MainWindow::newSearchForm()
 //
 //! Create a crossword game form.
 //---------------------------------------------------------------------------
-void
-MainWindow::newCrosswordGameForm()
+void MainWindow::newCrosswordGameForm()
 {
-    CrosswordGameForm* form = new CrosswordGameForm;
+    CrosswordGameForm *form = new CrosswordGameForm;
     Q_CHECK_PTR(form);
     newTab(form);
 }
@@ -704,10 +702,9 @@ MainWindow::newCrosswordGameForm()
 //
 //! Create a new word definition form.
 //---------------------------------------------------------------------------
-void
-MainWindow::newDefineForm()
+void MainWindow::newDefineForm()
 {
-    DefineForm* form = new DefineForm(wordEngine);
+    DefineForm *form = new DefineForm(wordEngine);
     Q_CHECK_PTR(form);
     newTab(form);
 }
@@ -717,10 +714,9 @@ MainWindow::newDefineForm()
 //
 //! Create a new introduction form.
 //---------------------------------------------------------------------------
-void
-MainWindow::newIntroForm()
+void MainWindow::newIntroForm()
 {
-    IntroForm* form = new IntroForm;
+    IntroForm *form = new IntroForm;
     Q_CHECK_PTR(form);
     newTab(form);
 }
@@ -730,10 +726,9 @@ MainWindow::newIntroForm()
 //
 //! Create a new cardbox form.
 //---------------------------------------------------------------------------
-void
-MainWindow::newCardboxForm()
+void MainWindow::newCardboxForm()
 {
-    CardboxForm* form = new CardboxForm(wordEngine);
+    CardboxForm *form = new CardboxForm(wordEngine);
     Q_CHECK_PTR(form);
     newTab(form);
 }
@@ -743,15 +738,14 @@ MainWindow::newCardboxForm()
 //
 //! Open a save dialog for the current tab.
 //---------------------------------------------------------------------------
-void
-MainWindow::doSaveAction()
+void MainWindow::doSaveAction()
 {
-    QWidget* w = tabStack->currentWidget();
+    QWidget *w = tabStack->currentWidget();
     if (!w)
         return;
 
     // Prompt to save changes if this is a Quiz tab
-    ActionForm* form = static_cast<ActionForm*>(w);
+    ActionForm *form = static_cast<ActionForm *>(w);
     form->saveRequested(false);
 }
 
@@ -760,15 +754,14 @@ MainWindow::doSaveAction()
 //
 //! Open a save dialog for the current tab.
 //---------------------------------------------------------------------------
-void
-MainWindow::doSaveAsAction()
+void MainWindow::doSaveAsAction()
 {
-    QWidget* w = tabStack->currentWidget();
+    QWidget *w = tabStack->currentWidget();
     if (!w)
         return;
 
     // Prompt to save changes if this is a Quiz tab
-    ActionForm* form = static_cast<ActionForm*>(w);
+    ActionForm *form = static_cast<ActionForm *>(w);
     form->saveRequested(true);
 }
 
@@ -777,14 +770,13 @@ MainWindow::doSaveAsAction()
 //
 //! Open a print dialog for the current tab.
 //---------------------------------------------------------------------------
-void
-MainWindow::doPrintAction()
+void MainWindow::doPrintAction()
 {
-    QWidget* w = tabStack->currentWidget();
+    QWidget *w = tabStack->currentWidget();
     if (!w)
         return;
 
-    ActionForm* form = static_cast<ActionForm*>(w);
+    ActionForm *form = static_cast<ActionForm *>(w);
     form->printRequested();
 }
 
@@ -793,13 +785,13 @@ MainWindow::doPrintAction()
 //
 //! Open a word judge window.
 //---------------------------------------------------------------------------
-void
-MainWindow::doJudgeAction()
+void MainWindow::doJudgeAction()
 {
-    JudgeSelectDialog* selectDialog = new JudgeSelectDialog(this);
+    JudgeSelectDialog *selectDialog = new JudgeSelectDialog(this);
     Q_CHECK_PTR(selectDialog);
     int code = selectDialog->exec();
-    if (code != QDialog::Accepted) {
+    if (code != QDialog::Accepted)
+    {
         delete selectDialog;
         return;
     }
@@ -809,7 +801,7 @@ MainWindow::doJudgeAction()
     delete selectDialog;
 
     QApplication::setOverrideCursor(Qt::BlankCursor);
-    JudgeDialog* dialog = new JudgeDialog(wordEngine, lexicon, password, this);
+    JudgeDialog *dialog = new JudgeDialog(wordEngine, lexicon, password, this);
     dialog->exec();
     delete dialog;
     QApplication::restoreOverrideCursor();
@@ -822,15 +814,15 @@ MainWindow::doJudgeAction()
 //! and accepts the dialog, write the settings.  If the user rejects the
 //! dialog, restore the settings after the dialog is closed.
 //---------------------------------------------------------------------------
-void
-MainWindow::editSettings()
+void MainWindow::editSettings()
 {
     bool settingsChanged = false;
     bool oldAutoImport = false;
     QSet<QString> oldLexicons;
     QList<LexiconStyle> oldStyles;
     QString oldCustomFile;
-    if (settingsDialog->exec() == QDialog::Accepted) {
+    if (settingsDialog->exec() == QDialog::Accepted)
+    {
         settingsChanged = true;
         oldAutoImport = MainSettings::getUseAutoImport();
         oldLexicons = MainSettings::getAutoImportLexicons().toSet();
@@ -838,7 +830,8 @@ MainWindow::editSettings()
         oldStyles = MainSettings::getWordListLexiconStyles();
         settingsDialog->writeSettings();
     }
-    else {
+    else
+    {
         settingsDialog->readSettings();
     }
     readSettings(false);
@@ -851,8 +844,7 @@ MainWindow::editSettings()
     // that have been deselected, because they might be in use (by a quiz, for
     // example).  If auto import was turned on, then all lexicons are new.
     QSet<QString> newLexicons = MainSettings::getAutoImportLexicons().toSet();
-    QSet<QString> addedLexicons = (newAutoImport && !oldAutoImport) ?
-        newLexicons : newLexicons - oldLexicons;
+    QSet<QString> addedLexicons = (newAutoImport && !oldAutoImport) ? newLexicons : newLexicons - oldLexicons;
 
     // Custom database needs to be rebuilt if custom lexicon file changed
     QString newCustomFile = MainSettings::getAutoImportFile();
@@ -864,10 +856,12 @@ MainWindow::editSettings()
     // that was newly added
     QSet<QString> symbolLexicons;
     QList<LexiconStyle> newStyles = MainSettings::getWordListLexiconStyles();
-    if (!oldStyles.isEmpty()) {
-        QMutableListIterator<LexiconStyle> it (oldStyles);
-        while (it.hasNext()) {
-            const LexiconStyle& style = it.next();
+    if (!oldStyles.isEmpty())
+    {
+        QMutableListIterator<LexiconStyle> it(oldStyles);
+        while (it.hasNext())
+        {
+            const LexiconStyle &style = it.next();
             int removed = newStyles.removeAll(style);
             if (!removed || addedLexicons.contains(style.compareLexicon))
                 symbolLexicons.insert(style.lexicon);
@@ -875,10 +869,12 @@ MainWindow::editSettings()
                 it.remove();
         }
     }
-    if (!newStyles.isEmpty()) {
-        QListIterator<LexiconStyle> it (newStyles);
-        while (it.hasNext()) {
-            const LexiconStyle& style = it.next();
+    if (!newStyles.isEmpty())
+    {
+        QListIterator<LexiconStyle> it(newStyles);
+        while (it.hasNext())
+        {
+            const LexiconStyle &style = it.next();
             symbolLexicons.insert(style.lexicon);
         }
     }
@@ -887,19 +883,23 @@ MainWindow::editSettings()
 
     // Try to import added lexicons and symbol-changed lexicons
     bool processNeeded = false;
-    if (!addedLexicons.isEmpty()) {
-        QSetIterator<QString> it (addedLexicons);
-        while (it.hasNext()) {
-            const QString& lexicon = it.next();
+    if (!addedLexicons.isEmpty())
+    {
+        QSetIterator<QString> it(addedLexicons);
+        while (it.hasNext())
+        {
+            const QString &lexicon = it.next();
             importLexicon(lexicon);
         }
         tryConnectToDatabases();
     }
 
     // Add DB errors for database whose symbols need to be updated
-    if (!symbolLexicons.isEmpty()) {
+    if (!symbolLexicons.isEmpty())
+    {
         processNeeded = true;
-        foreach (const QString& lexicon, symbolLexicons) {
+        foreach (const QString &lexicon, symbolLexicons)
+        {
             dbErrors.insert(lexicon, DbSymbolsOutOfDate);
         }
     }
@@ -918,10 +918,9 @@ MainWindow::editSettings()
 //! Allow the user to view the definition of a word.  Display a dialog asking
 //! the user for the word.
 //---------------------------------------------------------------------------
-void
-MainWindow::viewDefinition()
+void MainWindow::viewDefinition()
 {
-    WordEntryDialog* entryDialog = new WordEntryDialog(this);
+    WordEntryDialog *entryDialog = new WordEntryDialog(this);
     Q_CHECK_PTR(entryDialog);
     entryDialog->setWindowTitle("Word Definition");
     entryDialog->resize(entryDialog->minimumSizeHint().width() * 2,
@@ -933,7 +932,7 @@ MainWindow::viewDefinition()
     if ((code != QDialog::Accepted) || word.isEmpty())
         return;
 
-    DefinitionDialog* dialog = new DefinitionDialog(wordEngine, lexicon, word,
+    DefinitionDialog *dialog = new DefinitionDialog(wordEngine, lexicon, word,
                                                     this);
     Q_CHECK_PTR(dialog);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
@@ -946,23 +945,40 @@ MainWindow::viewDefinition()
 //! Allow the user to view variations of a word.  Display a dialog asking the
 //! user for the word.
 //---------------------------------------------------------------------------
-void
-MainWindow::viewVariation(int variation)
+void MainWindow::viewVariation(int variation)
 {
     QString caption;
-    switch (variation) {
-        case VariationAnagrams: caption = "Word Anagrams"; break;
-        case VariationSubanagrams: caption = "Word Subanagrams"; break;
-        case VariationHooks: caption = "Word Hooks"; break;
-        case VariationExtensions: caption = "Word Extensions"; break;
-        case VariationAnagramHooks: caption = "Word Anagram Hooks"; break;
-        case VariationBlankAnagrams: caption = "Word Blank Anagrams"; break;
-        case VariationBlankMatches: caption = "Word Blank Matches"; break;
-        case VariationTranspositions: caption = "Word Transpositions"; break;
-        default: break;
+    switch (variation)
+    {
+    case VariationAnagrams:
+        caption = "Word Anagrams";
+        break;
+    case VariationSubanagrams:
+        caption = "Word Subanagrams";
+        break;
+    case VariationHooks:
+        caption = "Word Hooks";
+        break;
+    case VariationExtensions:
+        caption = "Word Extensions";
+        break;
+    case VariationAnagramHooks:
+        caption = "Word Anagram Hooks";
+        break;
+    case VariationBlankAnagrams:
+        caption = "Word Blank Anagrams";
+        break;
+    case VariationBlankMatches:
+        caption = "Word Blank Matches";
+        break;
+    case VariationTranspositions:
+        caption = "Word Transpositions";
+        break;
+    default:
+        break;
     }
 
-    WordEntryDialog* entryDialog = new WordEntryDialog(this);
+    WordEntryDialog *entryDialog = new WordEntryDialog(this);
     Q_CHECK_PTR(entryDialog);
     entryDialog->setWindowTitle(caption);
     entryDialog->resize(entryDialog->minimumSizeHint().width() * 2,
@@ -975,13 +991,13 @@ MainWindow::viewVariation(int variation)
         return;
 
     WordVariationType type = static_cast<WordVariationType>(variation);
-    WordVariationDialog* dialog = new WordVariationDialog(wordEngine, lexicon,
+    WordVariationDialog *dialog = new WordVariationDialog(wordEngine, lexicon,
                                                           word, type, this);
     Q_CHECK_PTR(dialog);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     wordVariationDialogs.insert(wordVariationDialogs.size(), dialog);
-    //NOTE (JGM) WordVariationDialog* does not work as arguments!
-    connect(dialog, SIGNAL(destroyed(QObject*)), this, SLOT(clearDialogFromList(QObject*)));
+    // NOTE (JGM) WordVariationDialog* does not work as arguments!
+    connect(dialog, SIGNAL(destroyed(QObject *)), this, SLOT(clearDialogFromList(QObject *)));
     dialog->show();
 }
 
@@ -990,14 +1006,14 @@ MainWindow::viewVariation(int variation)
 //
 //! Called when the user requests a database rebuild.
 //---------------------------------------------------------------------------
-void
-MainWindow::rebuildDatabaseRequested()
+void MainWindow::rebuildDatabaseRequested()
 {
-    DatabaseRebuildDialog* dialog = new DatabaseRebuildDialog(this);
+    DatabaseRebuildDialog *dialog = new DatabaseRebuildDialog(this);
     Q_CHECK_PTR(dialog);
 
     int code = dialog->exec();
-    if (code == QDialog::Accepted) {
+    if (code == QDialog::Accepted)
+    {
         QStringList lexicons;
         if (dialog->getRebuildAll())
             lexicons = MainSettings::getAutoImportLexicons();
@@ -1014,19 +1030,20 @@ MainWindow::rebuildDatabaseRequested()
 //
 //! Called when the user requests to reschedule cardbox items.
 //---------------------------------------------------------------------------
-void
-MainWindow::rescheduleCardboxRequested()
+void MainWindow::rescheduleCardboxRequested()
 {
-    CardboxRescheduleDialog* dialog = new CardboxRescheduleDialog(this);
+    CardboxRescheduleDialog *dialog = new CardboxRescheduleDialog(this);
     Q_CHECK_PTR(dialog);
 
     int code = dialog->exec();
-    if (code == QDialog::Accepted) {
+    if (code == QDialog::Accepted)
+    {
         QString quizType = dialog->getQuizType();
         QString lexicon = dialog->getLexicon();
 
         QStringList words;
-        if (!dialog->getRescheduleAll()) {
+        if (!dialog->getRescheduleAll())
+        {
             SearchSpec searchSpec = dialog->getSearchSpec();
             words = wordEngine->search(lexicon, searchSpec, true);
             if (words.isEmpty())
@@ -1043,14 +1060,14 @@ MainWindow::rescheduleCardboxRequested()
 
         QApplication::setOverrideCursor(Qt::WaitCursor);
         int numRescheduled = rescheduleCardbox(words, lexicon, quizType,
-            rescheduleType, rescheduleValue);
+                                               rescheduleType, rescheduleValue);
         QApplication::restoreOverrideCursor();
 
         QString questionStr = numRescheduled == 1 ? QString("question")
                                                   : QString("questions");
         QString caption = "Cardbox Questions Rescheduled";
         QString message = QString::number(numRescheduled) + " " +
-            questionStr + " rescheduled.";
+                          questionStr + " rescheduled.";
         message = Auxil::dialogWordWrap(message);
         QMessageBox::information(this, caption, message);
     }
@@ -1063,8 +1080,7 @@ MainWindow::rescheduleCardboxRequested()
 //
 //! Display an About screen.
 //---------------------------------------------------------------------------
-void
-MainWindow::displayAbout()
+void MainWindow::displayAbout()
 {
     aboutDialog->exec();
 }
@@ -1074,17 +1090,16 @@ MainWindow::displayAbout()
 //
 //! Display a Help screen.
 //---------------------------------------------------------------------------
-void
-MainWindow::displayHelp()
+void MainWindow::displayHelp()
 {
-//    helpDialog->showPage(Auxil::getHelpDir() + "/index.html");
+    //    helpDialog->showPage(Auxil::getHelpDir() + "/index.html");
     QProcess *process = new QProcess;
     QStringList args;
     args << QLatin1String("-collectionFile")
-        << (Auxil::getHelpDir() + QLatin1String("/zyzzyva.qhc"))
-        << QLatin1String("-showUrl")
-        << QLatin1String("qthelp://twilightcenturycomputing.com/5.2.0/index.html")
-        << QLatin1String("-enableRemoteControl");
+         << (Auxil::getHelpDir() + QLatin1String("/zyzzyva.qhc"))
+         << QLatin1String("-showUrl")
+         << QLatin1String("qthelp://twilightcenturycomputing.com/5.2.0/index.html")
+         << QLatin1String("-enableRemoteControl");
     process->start(QLatin1String("assistant"), args);
     if (!process->waitForStarted())
         return;
@@ -1096,8 +1111,7 @@ MainWindow::displayHelp()
 //! Display any lexicon errors, and ask the user whether to proceed in the
 //! face of any errors.
 //---------------------------------------------------------------------------
-void
-MainWindow::displayLexiconError()
+void MainWindow::displayLexiconError()
 {
     if (lexiconError.isEmpty())
         return;
@@ -1119,8 +1133,8 @@ MainWindow::displayLexiconError()
 //
 //! @param message the error message
 //---------------------------------------------------------------------------
-//void
-//MainWindow::helpDialogError(const QString& message)
+// void
+// MainWindow::helpDialogError(const QString& message)
 //{
 //    QString caption = "Help Display Error";
 //    QMessageBox::warning(this, caption, Auxil::dialogWordWrap(message));
@@ -1132,19 +1146,20 @@ MainWindow::displayLexiconError()
 //! Close the currently open tab.  If no other tabs exist, hide the button
 //! used for closing tabs.
 //---------------------------------------------------------------------------
-void
-MainWindow::closeCurrentTab()
+void MainWindow::closeCurrentTab()
 {
-    QWidget* w = tabStack->currentWidget();
+    QWidget *w = tabStack->currentWidget();
     if (!w)
         return;
 
     // Prompt to save changes if this is a Quiz tab
-    ActionForm* form = static_cast<ActionForm*>(w);
+    ActionForm *form = static_cast<ActionForm *>(w);
     ActionForm::ActionFormType type = form->getType();
-    if (type == ActionForm::QuizFormType) {
-        QuizForm* quizForm = static_cast<QuizForm*> (form);
-        if (quizForm->isSaveEnabled()) {
+    if (type == ActionForm::QuizFormType)
+    {
+        QuizForm *quizForm = static_cast<QuizForm *>(form);
+        if (quizForm->isSaveEnabled())
+        {
             bool ok = quizForm->promptToSaveChanges();
             if (!ok)
                 return;
@@ -1153,7 +1168,8 @@ MainWindow::closeCurrentTab()
 
     tabStack->removeTab(tabStack->indexOf(w));
     delete w;
-    if (tabStack->count() == 0) {
+    if (tabStack->count() == 0)
+    {
         messageLabel->setText(QString());
         detailsLabel->setText(QString());
         closeButton->hide();
@@ -1167,17 +1183,17 @@ MainWindow::closeCurrentTab()
 //! Called when the current tab changes.  Sets the contents of the form
 //! used for closing tabs.
 //---------------------------------------------------------------------------
-void
-MainWindow::currentTabChanged(int)
+void MainWindow::currentTabChanged(int)
 {
-    QWidget* w = tabStack->currentWidget();
+    QWidget *w = tabStack->currentWidget();
     QString status;
     QString details;
     bool saveEnabled = false;
     bool saveCapable = false;
     bool printEnabled = false;
-    if (w) {
-        ActionForm* form = static_cast<ActionForm*>(w);
+    if (w)
+    {
+        ActionForm *form = static_cast<ActionForm *>(w);
         form->selectInputArea();
         status = form->getStatusString();
         details = form->getDetailsString();
@@ -1202,13 +1218,12 @@ MainWindow::currentTabChanged(int)
 //
 //! @param the new title status string
 //---------------------------------------------------------------------------
-void
-MainWindow::tabTitleChanged(const QString& title)
+void MainWindow::tabTitleChanged(const QString &title)
 {
-    QObject* object = sender();
+    QObject *object = sender();
     if (!object)
         return;
-    ActionForm* form = static_cast<ActionForm*>(object);
+    ActionForm *form = static_cast<ActionForm *>(object);
     int index = tabStack->indexOf(form);
     tabStack->setTabText(index, title);
 }
@@ -1220,15 +1235,15 @@ MainWindow::tabTitleChanged(const QString& title)
 //
 //! @param the new status string
 //---------------------------------------------------------------------------
-void
-MainWindow::tabStatusChanged(const QString& status)
+void MainWindow::tabStatusChanged(const QString &status)
 {
-    QObject* object = sender();
+    QObject *object = sender();
     if (!object)
         return;
-    ActionForm* form = static_cast<ActionForm*>(object);
+    ActionForm *form = static_cast<ActionForm *>(object);
     int index = tabStack->indexOf(form);
-    if (index == tabStack->currentIndex()) {
+    if (index == tabStack->currentIndex())
+    {
         messageLabel->setText(status);
         qApp->processEvents();
     }
@@ -1241,15 +1256,15 @@ MainWindow::tabStatusChanged(const QString& status)
 //
 //! @param the new details string
 //---------------------------------------------------------------------------
-void
-MainWindow::tabDetailsChanged(const QString& details)
+void MainWindow::tabDetailsChanged(const QString &details)
 {
-    QObject* object = sender();
+    QObject *object = sender();
     if (!object)
         return;
-    ActionForm* form = static_cast<ActionForm*>(object);
+    ActionForm *form = static_cast<ActionForm *>(object);
     int index = tabStack->indexOf(form);
-    if (index == tabStack->currentIndex()) {
+    if (index == tabStack->currentIndex())
+    {
         detailsLabel->setText(details);
         qApp->processEvents();
     }
@@ -1262,15 +1277,15 @@ MainWindow::tabDetailsChanged(const QString& details)
 //
 //! @param the new save enabled status
 //---------------------------------------------------------------------------
-void
-MainWindow::tabSaveEnabledChanged(bool saveEnabled)
+void MainWindow::tabSaveEnabledChanged(bool saveEnabled)
 {
-    QObject* object = sender();
+    QObject *object = sender();
     if (!object)
         return;
-    ActionForm* form = static_cast<ActionForm*>(object);
+    ActionForm *form = static_cast<ActionForm *>(object);
     int index = tabStack->indexOf(form);
-    if (index == tabStack->currentIndex()) {
+    if (index == tabStack->currentIndex())
+    {
         saveAction->setEnabled(saveEnabled);
         toolbarSaveAction->setEnabled(saveEnabled);
     }
@@ -1283,15 +1298,15 @@ MainWindow::tabSaveEnabledChanged(bool saveEnabled)
 //
 //! @param the new print enabled status
 //---------------------------------------------------------------------------
-void
-MainWindow::tabPrintEnabledChanged(bool printEnabled)
+void MainWindow::tabPrintEnabledChanged(bool printEnabled)
 {
-    QObject* object = sender();
+    QObject *object = sender();
     if (!object)
         return;
-    ActionForm* form = static_cast<ActionForm*>(object);
+    ActionForm *form = static_cast<ActionForm *>(object);
     int index = tabStack->indexOf(form);
-    if (index == tabStack->currentIndex()) {
+    if (index == tabStack->currentIndex())
+    {
         printAction->setEnabled(printEnabled);
         toolbarPrintAction->setEnabled(printEnabled);
     }
@@ -1305,8 +1320,7 @@ MainWindow::tabPrintEnabledChanged(bool printEnabled)
 //! @param lexicon the lexicon name
 //! @return the error code
 //---------------------------------------------------------------------------
-int
-MainWindow::tryConnectToDatabase(const QString& lexicon)
+int MainWindow::tryConnectToDatabase(const QString &lexicon)
 {
     if (wordEngine->databaseIsConnected(lexicon) && (lexicon != LEXICON_CUSTOM))
         return DbNoError;
@@ -1314,51 +1328,58 @@ MainWindow::tryConnectToDatabase(const QString& lexicon)
     setSplashMessage(QString("Connecting to %1 database...").arg(lexicon), SPLASH_MESSAGE_COLOR);
 
     QString dbFilename = Auxil::getDatabaseFilename(lexicon);
-    QFile dbFile (dbFilename);
+    QFile dbFile(dbFilename);
     int dbError = DbNoError;
 
     // Make sure DB file exists, can be opened, and is up-to-date
-    if (dbFile.exists()) {
+    if (dbFile.exists())
+    {
         Rand rng;
         rng.srand(QDateTime::currentDateTime().toTime_t(), Auxil::getPid());
-//        rng.srand(QDateTime::currentDateTime().toTime_t());
+        //        rng.srand(QDateTime::currentDateTime().toTime_t());
         unsigned int r = rng.rand();
         QString dbConnectionName = "MainWindow_" + lexicon + "_" +
-            QString::number(r);
-        do {
+                                   QString::number(r);
+        do
+        {
             QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE",
                                                         dbConnectionName);
             db.setDatabaseName(dbFilename);
             bool ok = db.open();
 
-            if (ok) {
+            if (ok)
+            {
                 QString qstr = "SELECT version FROM db_version";
-                QSqlQuery query (qstr, db);
+                QSqlQuery query(qstr, db);
                 int dbVersion = 0;
                 if (query.next())
                     dbVersion = query.value(0).toInt();
 
-                if (dbVersion < CURRENT_DATABASE_VERSION) {
+                if (dbVersion < CURRENT_DATABASE_VERSION)
+                {
                     dbError = DbOutOfDate;
                     break;
                 }
             }
 
-            else {
+            else
+            {
                 dbError = DbOpenError;
                 break;
             }
 
             // For custom lexicon, check to see if lexicon file has changed -
             // if it has, the database is out of date
-            if (lexicon == LEXICON_CUSTOM) {
+            if (lexicon == LEXICON_CUSTOM)
+            {
                 QString qstr = "SELECT file FROM lexicon_file";
-                QSqlQuery query (qstr, db);
+                QSqlQuery query(qstr, db);
                 QString lexiconFile;
                 if (query.next())
                     lexiconFile = query.value(0).toString();
 
-                if (lexiconFile != wordEngine->getLexiconFile(lexicon)) {
+                if (lexiconFile != wordEngine->getLexiconFile(lexicon))
+                {
                     dbError = DbOutOfDate;
                     break;
                 }
@@ -1368,7 +1389,8 @@ MainWindow::tryConnectToDatabase(const QString& lexicon)
         QSqlDatabase::removeDatabase(dbConnectionName);
     }
 
-    else {
+    else
+    {
         dbError = DbDoesNotExist;
     }
 
@@ -1392,13 +1414,13 @@ MainWindow::tryConnectToDatabase(const QString& lexicon)
 //! @param lexicon the lexicon name
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
-bool
-MainWindow::connectToDatabase(const QString& lexicon)
+bool MainWindow::connectToDatabase(const QString &lexicon)
 {
     QString dbFilename = Auxil::getDatabaseFilename(lexicon);
     QString dbError;
     bool ok = wordEngine->connectToDatabase(lexicon, dbFilename, &dbError);
-    if (!ok) {
+    if (!ok)
+    {
         QString caption = "Database Connection Error";
         QString message = "Unable to connect to database:\n" + dbError;
         message = Auxil::dialogWordWrap(message);
@@ -1416,15 +1438,16 @@ MainWindow::connectToDatabase(const QString& lexicon)
 //
 //! @param lexicons the list of lexicons
 //---------------------------------------------------------------------------
-void
-MainWindow::rebuildDatabases(const QStringList& lexicons)
+void MainWindow::rebuildDatabases(const QStringList &lexicons)
 {
     QStringList successes;
     QStringList failures;
-    foreach (const QString& lexicon, lexicons) {
+    foreach (const QString &lexicon, lexicons)
+    {
         bool ok = rebuildDatabase(lexicon);
         // FIXME: do something if DB creation fails!
-        if (!ok) {
+        if (!ok)
+        {
             failures.append(lexicon);
             continue;
         }
@@ -1437,13 +1460,15 @@ MainWindow::rebuildDatabases(const QStringList& lexicons)
     }
 
     QString resultMessage;
-    if (!successes.isEmpty()) {
+    if (!successes.isEmpty())
+    {
         resultMessage += "These databases were successfully created: " +
-            successes.join(", ") + ".";
+                         successes.join(", ") + ".";
     }
-    if (!failures.isEmpty()) {
+    if (!failures.isEmpty())
+    {
         resultMessage += "These databases encountered errors: " +
-            failures.join(", ") + ".";
+                         failures.join(", ") + ".";
     }
 
     QMessageBox::information(this, "Database Creation Result", resultMessage);
@@ -1457,59 +1482,62 @@ MainWindow::rebuildDatabases(const QStringList& lexicons)
 //! @param lexicon the lexicon name
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
-bool
-MainWindow::rebuildDatabase(const QString& lexicon)
+bool MainWindow::rebuildDatabase(const QString &lexicon)
 {
     QString dbFilename = Auxil::getDatabaseFilename(lexicon);
     QString definitionFilename;
-    if (lexicon == LEXICON_CUSTOM) {
+    if (lexicon == LEXICON_CUSTOM)
+    {
         definitionFilename = MainSettings::getAutoImportFile();
     }
-    else {
+    else
+    {
         definitionFilename = Auxil::getWordsDir() +
-            Auxil::getLexiconPrefix(lexicon) + (lexicon == LEXICON_CSW21 ? ".bin" : ".txt");
+                             Auxil::getLexiconPrefix(lexicon) + (lexicon == LEXICON_CSW24 ? ".bin" : ".txt");
     }
 
-    QFileInfo fileInfo (dbFilename);
+    QFileInfo fileInfo(dbFilename);
     QString file = fileInfo.fileName();
     QString path = fileInfo.path();
     QString tmpDbFilename = path + "/orig-" + file;
 
     wordEngine->disconnectFromDatabase(lexicon);
-    QFile dbFile (dbFilename);
-    QFile tmpDbFile (tmpDbFilename);
+    QFile dbFile(dbFilename);
+    QFile tmpDbFile(tmpDbFilename);
 
     bool ok = (!tmpDbFile.exists() || tmpDbFile.remove());
-    if (!ok) {
+    if (!ok)
+    {
         QString caption = "Cannot remove database backup file";
         QString message = "Cannot remove database backup file: " +
-            tmpDbFilename + ".\nPlease close Collins Zyzzyva, remove or rename the "
-            "file, then restart Collins Zyzzyva.";
+                          tmpDbFilename + ".\nPlease close Collins Zyzzyva, remove or rename the "
+                                          "file, then restart Collins Zyzzyva.";
         message = Auxil::dialogWordWrap(message);
         QMessageBox::warning(this, caption, message);
         return false;
     }
 
     ok = (!dbFile.exists() || dbFile.rename(tmpDbFilename));
-    if (!ok) {
+    if (!ok)
+    {
         QString caption = "Cannot remove database file";
         QString message = "Cannot remove original database file: " +
-            dbFilename + ".\nPlease close Collins Zyzzyva, remove or rename the "
-            "file, then restart Collins Zyzzyva.";
+                          dbFilename + ".\nPlease close Collins Zyzzyva, remove or rename the "
+                                       "file, then restart Collins Zyzzyva.";
         message = Auxil::dialogWordWrap(message);
         QMessageBox::warning(this, caption, message);
         tmpDbFile.rename(dbFilename);
         return false;
     }
 
-    QProgressDialog* dialog = new QProgressDialog(this);
+    QProgressDialog *dialog = new QProgressDialog(this);
 
-    QLabel* dialogLabel = new QLabel("Creating " + lexicon + " database...");
+    QLabel *dialogLabel = new QLabel("Creating " + lexicon + " database...");
     dialog->setWindowTitle("Creating " + lexicon + " Database");
     dialog->setLabel(dialogLabel);
 
-    CreateDatabaseThread* thread = new CreateDatabaseThread(wordEngine,
-        lexicon, dbFilename, definitionFilename, this);
+    CreateDatabaseThread *thread = new CreateDatabaseThread(wordEngine,
+                                                            lexicon, dbFilename, definitionFilename, this);
     connect(thread, SIGNAL(steps(int)),
             dialog, SLOT(setMaximum(int)));
     connect(thread, SIGNAL(progress(int)),
@@ -1526,19 +1554,22 @@ MainWindow::rebuildDatabase(const QString& lexicon)
     QApplication::restoreOverrideCursor();
 
     bool success = true;
-    if (!thread->getError().isEmpty()) {
+    if (!thread->getError().isEmpty())
+    {
         QMessageBox::information(this, "Unable to Create Database",
-            thread->getError());
+                                 thread->getError());
         success = false;
     }
 
-    else if (thread->getCancelled()) {
+    else if (thread->getCancelled())
+    {
         QMessageBox::information(this, "Database Not Created",
-            "Database creation cancelled.");
+                                 "Database creation cancelled.");
         success = false;
     }
 
-    if (!success) {
+    if (!success)
+    {
         if (dbFile.exists())
             dbFile.remove();
         if (tmpDbFile.exists())
@@ -1560,10 +1591,9 @@ MainWindow::rebuildDatabase(const QString& lexicon)
 //! @param quizType the quiz type
 //! @return the number of questions rescheduled
 //---------------------------------------------------------------------------
-int
-MainWindow::rescheduleCardbox(const QStringList& words,
-    const QString& lexicon, const QString& quizType,
-    CardboxRescheduleType rescheduleType, int rescheduleValue) const
+int MainWindow::rescheduleCardbox(const QStringList &words,
+                                  const QString &lexicon, const QString &quizType,
+                                  CardboxRescheduleType rescheduleType, int rescheduleValue) const
 {
     if (rescheduleType == CardboxRescheduleUnknown)
         return 0;
@@ -1573,42 +1603,48 @@ MainWindow::rescheduleCardbox(const QStringList& words,
         return 0;
 
     QStringList questions;
-    if (!words.isEmpty()) {
-        switch (type) {
-            case QuizSpec::QuizAnagrams:
-            case QuizSpec::QuizAnagramsWithHooks:
-            case QuizSpec::QuizSubanagrams:
-            case QuizSpec::QuizAnagramJumble:
-            case QuizSpec::QuizSubanagramJumble: {
-                QSet<QString> alphagramSet;
-                QStringListIterator it (words);
-                while (it.hasNext()) {
-                    alphagramSet.insert(Auxil::getAlphagram(it.next()));
-                }
-                questions = QStringList::fromSet(alphagramSet);
+    if (!words.isEmpty())
+    {
+        switch (type)
+        {
+        case QuizSpec::QuizAnagrams:
+        case QuizSpec::QuizAnagramsWithHooks:
+        case QuizSpec::QuizSubanagrams:
+        case QuizSpec::QuizAnagramJumble:
+        case QuizSpec::QuizSubanagramJumble:
+        {
+            QSet<QString> alphagramSet;
+            QStringListIterator it(words);
+            while (it.hasNext())
+            {
+                alphagramSet.insert(Auxil::getAlphagram(it.next()));
             }
-            break;
+            questions = QStringList::fromSet(alphagramSet);
+        }
+        break;
 
-            default:
+        default:
             questions = words;
         }
     }
 
-    QuizDatabase db (lexicon, quizType);
+    QuizDatabase db(lexicon, quizType);
     if (!db.isValid())
         return 0;
 
-    switch (rescheduleType) {
-        case CardboxRescheduleShiftDays:
+    switch (rescheduleType)
+    {
+    case CardboxRescheduleShiftDays:
         return db.shiftCardboxByDays(questions, rescheduleValue);
 
-        case CardboxRescheduleShiftBacklog:
+    case CardboxRescheduleShiftBacklog:
         return db.shiftCardboxByBacklog(questions, rescheduleValue);
 
-        case CardboxRescheduleByCardbox:
+    case CardboxRescheduleByCardbox:
         return db.rescheduleCardbox(questions);
 
-        default: return 0;
+    default:
+        return 0;
     }
 }
 
@@ -1620,30 +1656,31 @@ MainWindow::rescheduleCardbox(const QStringList& words,
 //
 //! @param event the close event
 //---------------------------------------------------------------------------
-void
-MainWindow::closeEvent(QCloseEvent* event)
+void MainWindow::closeEvent(QCloseEvent *event)
 {
-    QMessageBox* msgBox = new QMessageBox(QMessageBox::Question, QCoreApplication::applicationName(), tr("Really exit?\n"),
+    QMessageBox *msgBox = new QMessageBox(QMessageBox::Question, QCoreApplication::applicationName(), tr("Really exit?\n"),
                                           QMessageBox::StandardButton::NoButton, this);
     Q_CHECK_PTR(msgBox);
-    QCheckBox* neverShowCbox = new QCheckBox("Don't show this again");
+    QCheckBox *neverShowCbox = new QCheckBox("Don't show this again");
     Q_CHECK_PTR(neverShowCbox);
     msgBox->setCheckBox(neverShowCbox);
-    QPushButton* yesButton = msgBox->addButton(tr("Yes"), QMessageBox::YesRole);
+    QPushButton *yesButton = msgBox->addButton(tr("Yes"), QMessageBox::YesRole);
     Q_CHECK_PTR(yesButton);
-    QPushButton* noButton = msgBox->addButton(tr("No"), QMessageBox::NoRole);
+    QPushButton *noButton = msgBox->addButton(tr("No"), QMessageBox::NoRole);
     Q_CHECK_PTR(noButton);
-    QPushButton* cancelButton = msgBox->addButton(tr("Cancel"), QMessageBox::RejectRole);
+    QPushButton *cancelButton = msgBox->addButton(tr("Cancel"), QMessageBox::RejectRole);
     Q_CHECK_PTR(cancelButton);
     msgBox->setDefaultButton(yesButton);
     msgBox->setEscapeButton(cancelButton);
 
-    if (MainSettings::getConfirmExit()) {
+    if (MainSettings::getConfirmExit())
+    {
         msgBox->exec();
         if (msgBox->clickedButton() == yesButton || msgBox->clickedButton() == noButton)
             if (neverShowCbox->isChecked())
                 MainSettings::setConfirmExit(false);
-        if (msgBox->clickedButton() != yesButton) {
+        if (msgBox->clickedButton() != yesButton)
+        {
             event->ignore();
             delete msgBox;
             return;
@@ -1652,15 +1689,19 @@ MainWindow::closeEvent(QCloseEvent* event)
 
     // Look for unsaved quizzes
     int count = tabStack->count();
-    for (int i = 0; i < count; ++i) {
-        ActionForm* form = static_cast<ActionForm*> (tabStack->widget(i));
+    for (int i = 0; i < count; ++i)
+    {
+        ActionForm *form = static_cast<ActionForm *>(tabStack->widget(i));
         ActionForm::ActionFormType type = form->getType();
-        if (type == ActionForm::QuizFormType) {
-            QuizForm* quizForm = static_cast<QuizForm*> (form);
-            if (quizForm->isSaveEnabled()) {
+        if (type == ActionForm::QuizFormType)
+        {
+            QuizForm *quizForm = static_cast<QuizForm *>(form);
+            if (quizForm->isSaveEnabled())
+            {
                 tabStack->setCurrentWidget(quizForm);
                 bool ok = quizForm->promptToSaveChanges();
-                if (!ok) {
+                if (!ok)
+                {
                     event->ignore();
                     delete msgBox;
                     return;
@@ -1677,12 +1718,12 @@ MainWindow::closeEvent(QCloseEvent* event)
 //
 //! Read application settings.
 //---------------------------------------------------------------------------
-void
-MainWindow::readSettings(bool useGeometry)
+void MainWindow::readSettings(bool useGeometry)
 {
     MainSettings::readSettings();
 
-    if (useGeometry) {
+    if (useGeometry)
+    {
         resize(MainSettings::getMainWindowSize());
         move(MainSettings::getMainWindowPos());
     }
@@ -1690,17 +1731,20 @@ MainWindow::readSettings(bool useGeometry)
     // Main font
     QFont mainFont;
     QString fontStr = MainSettings::getMainFont();
-    if (fontStr.isEmpty()) {
+    if (fontStr.isEmpty())
+    {
         //(JGM) Attempt to dynamically reload fonts.
         qApp->setFont(QGuiApplication::font());
         qApp->setFont(QGuiApplication::font(), "QHeaderView");
     }
-    else if (mainFont.fromString(fontStr)) {
+    else if (mainFont.fromString(fontStr))
+    {
         qApp->setFont(mainFont);
         qApp->setFont(mainFont, "QHeaderView");
     }
-    else {
-        //qWarning("Cannot set font: " + fontStr);
+    else
+    {
+        // qWarning("Cannot set font: " + fontStr);
     }
 
     // Word list font
@@ -1710,51 +1754,60 @@ MainWindow::readSettings(bool useGeometry)
         qApp->setFont(qApp->font(), "WordTableView");
     else if (font.fromString(fontStr))
         qApp->setFont(font, "WordTableView");
-    else {
-        //qWarning("Cannot set font: " + fontStr);
+    else
+    {
+        // qWarning("Cannot set font: " + fontStr);
     }
 
     // Quiz label font
     fontStr = MainSettings::getQuizLabelFont();
-    if (fontStr.isEmpty()) {
+    if (fontStr.isEmpty())
+    {
         font = qApp->font();
         font.setPixelSize(60);
         qApp->setFont(font, "QuizQuestionLabel");
     }
     else if (font.fromString(fontStr))
         qApp->setFont(font, "QuizQuestionLabel");
-    else {
-        //qWarning("Cannot set font: " + fontStr);
+    else
+    {
+        // qWarning("Cannot set font: " + fontStr);
     }
 
     // Word input font
     fontStr = MainSettings::getWordInputFont();
-    if (fontStr.isEmpty()) {
+    if (fontStr.isEmpty())
+    {
         qApp->setFont(qApp->font(), "WordLineEdit");
         qApp->setFont(qApp->font(), "WordTextEdit");
     }
-    else if (font.fromString(fontStr)) {
+    else if (font.fromString(fontStr))
+    {
         qApp->setFont(font, "WordLineEdit");
         qApp->setFont(font, "WordTextEdit");
     }
-    else {
-        //qWarning("Cannot set font: " + fontStr);
+    else
+    {
+        // qWarning("Cannot set font: " + fontStr);
     }
 
     // Definition font
     fontStr = MainSettings::getDefinitionFont();
-    if (fontStr.isEmpty()) {
+    if (fontStr.isEmpty())
+    {
         qApp->setFont(qApp->font(), "DefinitionBox");
         qApp->setFont(qApp->font(), "DefinitionLabel");
         qApp->setFont(qApp->font(), "DefinitionTextEdit");
     }
-    else if (font.fromString(fontStr)) {
+    else if (font.fromString(fontStr))
+    {
         qApp->setFont(font, "DefinitionBox");
         qApp->setFont(font, "DefinitionLabel");
         qApp->setFont(font, "DefinitionTextEdit");
     }
-    else {
-        //qWarning("Cannot set font: " + fontStr);
+    else
+    {
+        // qWarning("Cannot set font: " + fontStr);
     }
 
     // Printing font
@@ -1763,8 +1816,9 @@ MainWindow::readSettings(bool useGeometry)
         ;
     else if (font.fromString(fontStr))
         ;
-    else {
-        //qWarning("Cannot set font: " + fontStr);
+    else
+    {
+        // qWarning("Cannot set font: " + fontStr);
     }
 
     // Set tile theme and background color for all quiz forms
@@ -1773,43 +1827,52 @@ MainWindow::readSettings(bool useGeometry)
     QString tileTheme = MainSettings::getTileTheme();
     QColor backgroundColor = MainSettings::getQuizBackgroundColor();
     int count = tabStack->count();
-    for (int i = 0; i < count; ++i) {
-        ActionForm* form = static_cast<ActionForm*> (tabStack->widget(i));
+    for (int i = 0; i < count; ++i)
+    {
+        ActionForm *form = static_cast<ActionForm *>(tabStack->widget(i));
         ActionForm::ActionFormType type = form->getType();
-        if (type == ActionForm::QuizFormType) {
-            QuizForm* quizForm = static_cast<QuizForm*> (form);
+        if (type == ActionForm::QuizFormType)
+        {
+            QuizForm *quizForm = static_cast<QuizForm *>(form);
             quizForm->setBackgroundColor(backgroundColor);
             quizForm->updateQuestionStatus();
             quizForm->updateStatusString();
             // ### update details string here?
-            //quizForm->updateDetailsString();
+            // quizForm->updateDetailsString();
             quizForm->setTileTheme(tileTheme);
             quizForm->getView()->resizeItemsRecursively();
-            AnalyzeQuizDialog* analyzeDialog = quizForm->getAnalyzeDialog();
-            if (analyzeDialog) {
+            AnalyzeQuizDialog *analyzeDialog = quizForm->getAnalyzeDialog();
+            if (analyzeDialog)
+            {
                 analyzeDialog->getMissedView()->resizeItemsRecursively();
                 analyzeDialog->getIncorrectView()->resizeItemsRecursively();
             }
         }
-        else if (type == ActionForm::SearchFormType) {
-            SearchForm* searchForm = static_cast<SearchForm*> (form);
+        else if (type == ActionForm::SearchFormType)
+        {
+            SearchForm *searchForm = static_cast<SearchForm *>(form);
             searchForm->getView()->resizeItemsRecursively();
         }
     }
     //! TODO (JGM) Add an interface/function to combine this with the same code in
     //! WordTableView::resizeItemsRecursively.
-    QListIterator<WordVariationDialog*> it(wordVariationDialogs);
-    WordVariationDialog* current;
-    while (it.hasNext()) {
+    QListIterator<WordVariationDialog *> it(wordVariationDialogs);
+    WordVariationDialog *current;
+    while (it.hasNext())
+    {
         current = it.next();
-        if (current) {
-            if (current->getTopView()) {
+        if (current)
+        {
+            if (current->getTopView())
+            {
                 current->getTopView()->resizeItemsRecursively();
             }
-            if (current->getMiddleView()) {
+            if (current->getMiddleView())
+            {
                 current->getMiddleView()->resizeItemsRecursively();
             }
-            if (current->getBottomView()) {
+            if (current->getBottomView())
+            {
                 current->getBottomView()->resizeItemsRecursively();
             }
         }
@@ -1821,8 +1884,7 @@ MainWindow::readSettings(bool useGeometry)
 //
 //! Write application settings.
 //---------------------------------------------------------------------------
-void
-MainWindow::writeSettings()
+void MainWindow::writeSettings()
 {
     MainSettings::setMainWindowPos(pos());
     MainSettings::setMainWindowSize(size());
@@ -1837,15 +1899,14 @@ MainWindow::writeSettings()
 //
 //! @param form the form to display
 //---------------------------------------------------------------------------
-void
-MainWindow::newTab(ActionForm* form)
+void MainWindow::newTab(ActionForm *form)
 {
-    connect(form, SIGNAL(titleChanged(const QString&)),
-            SLOT(tabTitleChanged(const QString&)));
-    connect(form, SIGNAL(statusChanged(const QString&)),
-            SLOT(tabStatusChanged(const QString&)));
-    connect(form, SIGNAL(detailsChanged(const QString&)),
-            SLOT(tabDetailsChanged(const QString&)));
+    connect(form, SIGNAL(titleChanged(const QString &)),
+            SLOT(tabTitleChanged(const QString &)));
+    connect(form, SIGNAL(statusChanged(const QString &)),
+            SLOT(tabStatusChanged(const QString &)));
+    connect(form, SIGNAL(detailsChanged(const QString &)),
+            SLOT(tabDetailsChanged(const QString &)));
     connect(form, SIGNAL(saveEnabledChanged(bool)),
             SLOT(tabSaveEnabledChanged(bool)));
     connect(form, SIGNAL(printEnabledChanged(bool)),
@@ -1866,19 +1927,19 @@ MainWindow::newTab(ActionForm* form)
 //
 //! @param filename the file
 //---------------------------------------------------------------------------
-void
-MainWindow::newQuizFromQuizFile(const QString& filename)
+void MainWindow::newQuizFromQuizFile(const QString &filename)
 {
-    QFile file (filename);
+    QFile file(filename);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
 
     QString errorMsg;
     QuizSpec quizSpec;
-    if (!quizSpec.fromXmlFile(file, &errorMsg)) {
+    if (!quizSpec.fromXmlFile(file, &errorMsg))
+    {
         QMessageBox::warning(this, "Cannot Create Quiz",
                              "An error occurred while creating the quiz.\n" +
-                             errorMsg);
+                                 errorMsg);
         return;
     }
 
@@ -1893,17 +1954,17 @@ MainWindow::newQuizFromQuizFile(const QString& filename)
 //
 //! @param filename the file
 //---------------------------------------------------------------------------
-void
-MainWindow::newQuizFromWordFile(const QString& filename)
+void MainWindow::newQuizFromWordFile(const QString &filename)
 {
-    QFile file (filename);
+    QFile file(filename);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
 
     QStringList words;
-    char* buffer = new char[MAX_INPUT_LINE_LEN];
-    while (file.readLine(buffer, MAX_INPUT_LINE_LEN) > 0) {
-        QString line (buffer);
+    char *buffer = new char[MAX_INPUT_LINE_LEN];
+    while (file.readLine(buffer, MAX_INPUT_LINE_LEN) > 0)
+    {
+        QString line(buffer);
         line = line.simplified();
         if (!line.length() || (line.at(0) == '#'))
             continue;
@@ -1941,28 +2002,27 @@ MainWindow::newQuizFromWordFile(const QString& filename)
 //! @param errString return error string
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
-bool
-MainWindow::importDawg(const QString& lexicon, const QString& file, bool
-                       reverse, QString* errString, quint16*
-                       expectedChecksum)
+bool MainWindow::importDawg(const QString &lexicon, const QString &file, bool reverse, QString *errString, quint16 *expectedChecksum)
 {
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     bool ok = wordEngine->importDawgFile(lexicon, file, reverse,
                                          errString, expectedChecksum);
     QApplication::restoreOverrideCursor();
 
-    if (!ok) {
+    if (!ok)
+    {
         QString message = "Unable to load the " + lexicon + " lexicon.  "
-            "The following errors occurred:\n";
+                                                            "The following errors occurred:\n";
         if (errString)
             message += *errString;
         message = Auxil::dialogWordWrap(message);
         QMessageBox::warning(this, "Unable to load lexicon", message);
     }
 
-    else if (errString && !errString->isEmpty()) {
+    else if (errString && !errString->isEmpty())
+    {
         QString message = "The '" + lexicon + "' lexicon was loaded, but "
-            "the following errors occurred:\n";
+                                              "the following errors occurred:\n";
         if (errString)
             message += *errString;
         message = Auxil::dialogWordWrap(message);
@@ -1984,19 +2044,20 @@ MainWindow::importDawg(const QString& lexicon, const QString& file, bool
 //! @return the number of imported words
 //---------------------------------------------------------------------------
 QList<quint16>
-MainWindow::importChecksums(const QString& filename)
+MainWindow::importChecksums(const QString &filename)
 {
     QList<quint16> checksums;
-    QFile file (filename);
+    QFile file(filename);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return checksums;
 
-    char* buffer = new char[MAX_INPUT_LINE_LEN];
-    while (file.readLine(buffer, MAX_INPUT_LINE_LEN) > 0) {
-        QString line (buffer);
+    char *buffer = new char[MAX_INPUT_LINE_LEN];
+    while (file.readLine(buffer, MAX_INPUT_LINE_LEN) > 0)
+    {
+        QString line(buffer);
         checksums.append(line.toUShort());
     }
-    delete [] buffer;
+    delete[] buffer;
     return checksums;
 }
 
@@ -2007,10 +2068,9 @@ MainWindow::importChecksums(const QString& filename)
 //
 //! @param message the message
 //---------------------------------------------------------------------------
-void
-MainWindow::setSplashMessage(const QString& message, const QColor& color)
+void MainWindow::setSplashMessage(const QString &message, const QColor &color)
 {
-    //qDebug("Splash message: |%s|", message.toUtf8().constData());
+    // qDebug("Splash message: |%s|", message.toUtf8().constData());
     if (splashScreen)
         splashScreen->showMessage(message, Qt::AlignHCenter | Qt::AlignBottom, color);
     else
@@ -2024,16 +2084,16 @@ MainWindow::setSplashMessage(const QString& message, const QColor& color)
 //
 //! Fix Trolltech config file to avoid a crash on certain Linux systems.
 //---------------------------------------------------------------------------
-void
-MainWindow::fixTrolltechConfig()
+void MainWindow::fixTrolltechConfig()
 {
-    QFile file (Auxil::getHomeDir() + "/.config/Trolltech.conf");
+    QFile file(Auxil::getHomeDir() + "/.config/Trolltech.conf");
     if (!file.exists() || !file.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
 
     QStringList lines;
-    QTextStream inStream (&file);
-    while (!inStream.atEnd()) {
+    QTextStream inStream(&file);
+    while (!inStream.atEnd())
+    {
         QString line = inStream.readLine();
         if (!line.startsWith("filedialog="))
             lines.append(line);
@@ -2043,8 +2103,9 @@ MainWindow::fixTrolltechConfig()
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         return;
 
-    QTextStream outStream (&file);
-    foreach (const QString& line, lines) {
+    QTextStream outStream(&file);
+    foreach (const QString &line, lines)
+    {
         outStream << line;
         endl(outStream);
     }
@@ -2055,8 +2116,7 @@ MainWindow::fixTrolltechConfig()
 //
 //! Update settings. In particular, add new default settings.
 //---------------------------------------------------------------------------
-void
-MainWindow::updateSettings()
+void MainWindow::updateSettings()
 {
     QString prevVersion = MainSettings::getProgramVersion();
     QString currVersion = Defs::ZYZZYVA_VERSION;
@@ -2064,16 +2124,16 @@ MainWindow::updateSettings()
     if (prevVersion == currVersion)
         return;
 
-    // Add default CSW21 lexicon styles in 2.2.0
+    // Add default CSW24 lexicon styles in 2.2.0
     if (Auxil::lessThanVersion(prevVersion, "2.2.0") &&
-       ((currVersion == "2.2.0") ||
-        Auxil::lessThanVersion("2.2.0", currVersion)))
+        ((currVersion == "2.2.0") ||
+         Auxil::lessThanVersion("2.2.0", currVersion)))
     {
         QList<LexiconStyle> styles = MainSettings::getWordListLexiconStyles();
         LexiconStyle addStyle;
         QList<LexiconStyle> addStyles;
 
-        addStyle.lexicon = Defs::LEXICON_CSW21;
+        addStyle.lexicon = Defs::LEXICON_CSW24;
         addStyle.compareLexicon = Defs::LEXICON_CUSTOM;
         addStyle.inCompareLexicon = false;
         addStyle.symbol = "+";
@@ -2082,9 +2142,11 @@ MainWindow::updateSettings()
         // ### Create addStyleToList(bool overwrite) or something similar
         // Look for existing matching lexicon styles and skip if present
         bool added = false;
-        foreach (const LexiconStyle& style, addStyles) {
+        foreach (const LexiconStyle &style, addStyles)
+        {
             bool found = false;
-            foreach (const LexiconStyle& existStyle, styles) {
+            foreach (const LexiconStyle &existStyle, styles)
+            {
                 if ((style.lexicon == existStyle.lexicon) &&
                     (style.compareLexicon == existStyle.compareLexicon) &&
                     (style.inCompareLexicon == existStyle.inCompareLexicon))
@@ -2093,13 +2155,15 @@ MainWindow::updateSettings()
                     break;
                 }
             }
-            if (!found) {
+            if (!found)
+            {
                 styles.append(style);
                 added = true;
             }
         }
 
-        if (added) {
+        if (added)
+        {
             MainSettings::setWordListLexiconStyles(styles);
             settingsDialog->refreshSettings();
         }
@@ -2111,27 +2175,28 @@ MainWindow::updateSettings()
 //
 //! Create directories for user data.
 //---------------------------------------------------------------------------
-void
-MainWindow::makeUserDirs()
+void MainWindow::makeUserDirs()
 {
     QDir dir;
 
     // Copy predefined quizzes and searches into user data directory
-    if (!dir.exists(Auxil::getQuizDir() + "/predefined")) {
+    if (!dir.exists(Auxil::getQuizDir() + "/predefined"))
+    {
         Auxil::copyDir(Auxil::getRootDir() + "/data/quiz/predefined",
                        Auxil::getQuizDir() + "/predefined");
     }
-    if (!dir.exists(Auxil::getSearchDir() + "/predefined")) {
+    if (!dir.exists(Auxil::getSearchDir() + "/predefined"))
+    {
         Auxil::copyDir(Auxil::getRootDir() + "/data/search/predefined",
                        Auxil::getSearchDir() + "/predefined");
     }
 
-//    renameLexicon(LEXICON_OLD_OWL, LEXICON_OWL);
-//    renameLexicon(LEXICON_OLD_OWL2, LEXICON_OWL2);
-//    renameLexicon(LEXICON_OLD_OSPD4, LEXICON_OSPD4);
-//    renameLexicon(LEXICON_OLD_SOWPODS, LEXICON_OSWI);
-//    renameLexicon(LEXICON_OLD_ODS, LEXICON_ODS4);
-//    renameLexicon(LEXICON_OLD_CSW, LEXICON_CSW07);
+    //    renameLexicon(LEXICON_OLD_OWL, LEXICON_OWL);
+    //    renameLexicon(LEXICON_OLD_OWL2, LEXICON_OWL2);
+    //    renameLexicon(LEXICON_OLD_OSPD4, LEXICON_OSPD4);
+    //    renameLexicon(LEXICON_OLD_SOWPODS, LEXICON_OSWI);
+    //    renameLexicon(LEXICON_OLD_ODS, LEXICON_ODS4);
+    //    renameLexicon(LEXICON_OLD_CSW, LEXICON_CSW07);
 
     dir.mkpath(Auxil::getQuizDir() + "/saved");
     dir.mkpath(Auxil::getSearchDir() + "/saved");
@@ -2147,36 +2212,39 @@ MainWindow::makeUserDirs()
 //! @param oldName the old lexicon name
 //! @param newName the new lexicon name
 //---------------------------------------------------------------------------
-void
-MainWindow::renameLexicon(const QString& oldName, const QString& newName)
+void MainWindow::renameLexicon(const QString &oldName, const QString &newName)
 {
     QDir dir;
 
     // Move quiz database
     QString oldDir = Auxil::getQuizDir() + "/data/" + oldName;
     QString newDir = Auxil::getQuizDir() + "/data/" + newName;
-    if (dir.exists(oldDir) && !dir.exists(newDir)) {
+    if (dir.exists(oldDir) && !dir.exists(newDir))
+    {
         dir.rename(oldDir, newDir);
     }
 
     // Move judge records
     oldDir = Auxil::getUserDir() + "/judge/" + oldName;
     newDir = Auxil::getUserDir() + "/judge/" + newName;
-    if (dir.exists(oldDir) && !dir.exists(newDir)) {
+    if (dir.exists(oldDir) && !dir.exists(newDir))
+    {
         dir.rename(oldDir, newDir);
     }
 
     // Move lexicon database
     QString oldDb = Auxil::getUserDir() + "/lexicons/" + oldName + ".db";
     QString newDb = Auxil::getUserDir() + "/lexicons/" + newName + ".db";
-    if (QFile::exists(oldDb) && !QFile::exists(newDb)) {
+    if (QFile::exists(oldDb) && !QFile::exists(newDb))
+    {
         QFile::rename(oldDb, newDb);
     }
 
     // Move lexicon database backups
     oldDb = Auxil::getUserDir() + "/lexicons/orig-" + oldName + ".db";
     newDb = Auxil::getUserDir() + "/lexicons/orig-" + newName + ".db";
-    if (QFile::exists(oldDb) && !QFile::exists(newDb)) {
+    if (QFile::exists(oldDb) && !QFile::exists(newDb))
+    {
         QFile::rename(oldDb, newDb);
     }
 
@@ -2184,9 +2252,11 @@ MainWindow::renameLexicon(const QString& oldName, const QString& newName)
     bool changed = false;
     QStringList autoImportLexicons = MainSettings::getAutoImportLexicons();
     int numAutoImportLexicons = autoImportLexicons.count();
-    for (int i = 0; i < numAutoImportLexicons; ++i) {
-        QString& lexicon = autoImportLexicons[i];
-        if (lexicon == oldName) {
+    for (int i = 0; i < numAutoImportLexicons; ++i)
+    {
+        QString &lexicon = autoImportLexicons[i];
+        if (lexicon == oldName)
+        {
             lexicon = newName;
             changed = true;
         }
@@ -2198,18 +2268,22 @@ MainWindow::renameLexicon(const QString& oldName, const QString& newName)
     changed = false;
     QList<LexiconStyle> lexiconStyles = MainSettings::getWordListLexiconStyles();
     int numStyles = lexiconStyles.count();
-    for (int i = 0; i < numStyles; ++i) {
-        LexiconStyle& style = lexiconStyles[i];
-        if (style.lexicon == oldName) {
+    for (int i = 0; i < numStyles; ++i)
+    {
+        LexiconStyle &style = lexiconStyles[i];
+        if (style.lexicon == oldName)
+        {
             style.lexicon = newName;
             changed = true;
         }
-        if (style.compareLexicon == oldName) {
+        if (style.compareLexicon == oldName)
+        {
             style.compareLexicon = newName;
             changed = true;
         }
     }
-    if (changed) {
+    if (changed)
+    {
         MainSettings::setWordListLexiconStyles(lexiconStyles);
         settingsDialog->refreshSettings();
     }
@@ -2223,8 +2297,7 @@ MainWindow::renameLexicon(const QString& oldName, const QString& newName)
 //! @param lexicon the name of the lexicon
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
-bool
-MainWindow::importLexicon(const QString& lexicon)
+bool MainWindow::importLexicon(const QString &lexicon)
 {
     QString importFile;
     QString reverseImportFile;
@@ -2232,29 +2305,33 @@ MainWindow::importLexicon(const QString& lexicon)
     QString playabilityFile;
     bool ok = true;
     bool dawg = true;
-    if (lexicon == LEXICON_CUSTOM) {
+    if (lexicon == LEXICON_CUSTOM)
+    {
         importFile = MainSettings::getAutoImportFile();
         dawg = false;
 
-        if (wordEngine->lexiconIsLoaded(lexicon)) {
+        if (wordEngine->lexiconIsLoaded(lexicon))
+        {
             QString lexiconFile = wordEngine->getLexiconFile(lexicon);
             if (lexiconFile == importFile)
                 return true;
         }
     }
-    else {
+    else
+    {
         if (wordEngine->lexiconIsLoaded(lexicon))
             return true;
 
         QMap<QString, QString> prefixMap;
-        prefixMap[LEXICON_CSW21] = "/British/CSW21";
+        prefixMap[LEXICON_CSW24] = "/British/CSW24";
 
-        if (prefixMap.contains(lexicon)) {
+        if (prefixMap.contains(lexicon))
+        {
             QString prefix = Auxil::getWordsDir() + prefixMap.value(lexicon);
-            importFile =        prefix + ".dwg";
+            importFile = prefix + ".dwg";
             reverseImportFile = prefix + "-R.dwg";
-            checksumFile =      prefix + "-Checksums.txt";
-            playabilityFile =   prefix + (lexicon == LEXICON_CSW21 ? "-Playability.bin" : "-Playability.txt");
+            checksumFile = prefix + "-Checksums.txt";
+            playabilityFile = prefix + (lexicon == LEXICON_CSW24 ? "-Playability.bin" : "-Playability.txt");
         }
     }
 
@@ -2264,19 +2341,22 @@ MainWindow::importLexicon(const QString& lexicon)
     QString splashMessage = "Loading " + lexicon + " lexicon...";
     setSplashMessage(splashMessage, SPLASH_MESSAGE_COLOR);
 
-    if (dawg) {
+    if (dawg)
+    {
         quint16 expectedForwardChecksum = 0;
         quint16 expectedReverseChecksum = 0;
 
         QList<quint16> checksums = importChecksums(checksumFile);
-        if (checksums.size() >= 2) {
+        if (checksums.size() >= 2)
+        {
             expectedForwardChecksum = checksums[0];
             expectedReverseChecksum = checksums[1];
         }
-        else {
+        else
+        {
             QString message = "Cannot find checksum information for the '" +
-                lexicon + "' lexicon.  The lexicon will be loaded, but it is "
-                "possible the lexicon has been corrupted.";
+                              lexicon + "' lexicon.  The lexicon will be loaded, but it is "
+                                        "possible the lexicon has been corrupted.";
             message = Auxil::dialogWordWrap(message);
             QMessageBox::warning(this, "Unable to find checksums for lexicon",
                                  message);
@@ -2310,14 +2390,13 @@ MainWindow::importLexicon(const QString& lexicon)
 //! @param file the file to import words from
 //! @return the number of imported words
 //---------------------------------------------------------------------------
-int
-MainWindow::importText(const QString& lexicon, const QString& file)
+int MainWindow::importText(const QString &lexicon, const QString &file)
 {
     int imported;
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-    if (lexicon == LEXICON_CSW21)
+    if (lexicon == LEXICON_CSW24)
         imported = wordEngine->importBinaryFile(lexicon, file, true);
     else
         imported = wordEngine->importTextFile(lexicon, file, true);
@@ -2334,8 +2413,7 @@ MainWindow::importText(const QString& lexicon, const QString& file)
 //! @param lexicon the lexicon name
 //! @return the number of imported stems
 //---------------------------------------------------------------------------
-int
-MainWindow::importStems(const QString& lexicon)
+int MainWindow::importStems(const QString &lexicon)
 {
     QStringList stemFiles;
     stemFiles << (Auxil::getWordsDir() + "/British/6-letter-stems.txt");
@@ -2345,7 +2423,8 @@ MainWindow::importStems(const QString& lexicon)
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     QStringList::iterator it;
     int totalImported = 0;
-    for (it = stemFiles.begin(); it != stemFiles.end(); ++it) {
+    for (it = stemFiles.begin(); it != stemFiles.end(); ++it)
+    {
         int imported = wordEngine->importStems(lexicon, *it, &err);
         totalImported += imported;
     }
@@ -2359,8 +2438,7 @@ MainWindow::importStems(const QString& lexicon)
 //
 //! Test something out.
 //---------------------------------------------------------------------------
-void
-MainWindow::doTest()
+void MainWindow::doTest()
 {
     LetterBag letterBag;
     qDebug("*** doTest!");
@@ -2374,8 +2452,7 @@ MainWindow::doTest()
 //! @param orig Source QAction
 //! @param dest Target QAction
 //---------------------------------------------------------------------------
-void
-MainWindow::copyQActionPartial(const QAction* orig, QAction* dest)
+void MainWindow::copyQActionPartial(const QAction *orig, QAction *dest)
 {
     dest->setIcon(orig->icon());
     dest->setEnabled(orig->isEnabled());
@@ -2390,9 +2467,8 @@ MainWindow::copyQActionPartial(const QAction* orig, QAction* dest)
 //
 //! @param obj pointer to the child WVD object.
 //---------------------------------------------------------------------------
-void
-MainWindow::clearDialogFromList(QObject* obj)
+void MainWindow::clearDialogFromList(QObject *obj)
 {
-    WordVariationDialog *wvd = static_cast<WordVariationDialog*>(obj);
+    WordVariationDialog *wvd = static_cast<WordVariationDialog *>(obj);
     wordVariationDialogs.removeOne(wvd);
 }

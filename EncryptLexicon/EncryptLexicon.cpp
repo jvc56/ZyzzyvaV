@@ -29,7 +29,6 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-
 #include "../src/simplecrypt/simplecrypt.h"
 #include <QByteArray>
 #include <QCoreApplication>
@@ -39,27 +38,26 @@
 #include <QString>
 #include <QStringList>
 
-
-static const QString plaintextFileName = "J:\\VM_guests_shared\\Kubuntu 64-bit (development)\\Zyzzyva\\CSW21.txt";
+static const QString plaintextFileName = "J:\\VM_guests_shared\\Kubuntu 64-bit (development)\\Zyzzyva\\CSW24.txt";
 // Set to empty string to have no header written.  A header must start with '#' character.
 static const QString cipherFileHeader = "# Published under license with Collins, an imprint of HarperCollins Publishers Limited.\r\n";
 static const QString cipherFileSuffix = ".bin";
 
-
-qint32 encryptLexiconFile(const QString& filename)
+qint32 encryptLexiconFile(const QString &filename)
 {
     // Get cryptographic hash.
     qulonglong cryptHash =
-    {
+        {
 #include "../PRIVATE/crypthash"
-    };
+        };
 
     SimpleCrypt crypto(cryptHash);
     crypto.setCompressionMode(SimpleCrypt::CompressionAlways);
     crypto.setIntegrityProtectionMode(SimpleCrypt::ProtectionHash);
 
     QFile plaintextFile(filename);
-    if (!plaintextFile.open(QIODevice::ReadOnly)) {
+    if (!plaintextFile.open(QIODevice::ReadOnly))
+    {
         return 1;
     }
     QByteArray *fileBlob = new QByteArray(plaintextFile.readAll());
@@ -68,16 +66,17 @@ qint32 encryptLexiconFile(const QString& filename)
     printf("Encrypting file:  %s ...\n", filename.toUtf8().data());
     QByteArray *ciphertextData = new QByteArray(crypto.encryptToByteArray(*fileBlob));
     delete fileBlob;
-//    if (!crypto.lastError() == SimpleCrypt::ErrorNoError) {
-//        // error code
-//        delete ciphertextData;
-//        return;
-//    }
+    //    if (!crypto.lastError() == SimpleCrypt::ErrorNoError) {
+    //        // error code
+    //        delete ciphertextData;
+    //        return;
+    //    }
 
     QFileInfo plaintextFileInfo(plaintextFileName);
 
     QFile ciphertextFile(plaintextFileInfo.completeBaseName() + cipherFileSuffix);
-    if (!ciphertextFile.open(QIODevice::WriteOnly)) {
+    if (!ciphertextFile.open(QIODevice::WriteOnly))
+    {
         delete ciphertextData;
         return 1;
     }

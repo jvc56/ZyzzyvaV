@@ -47,20 +47,20 @@ const int MAX_SYMBOL_LENGTH = 3;
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-LexiconStyleWidget::LexiconStyleWidget(QWidget* parent, Qt::WindowFlags f)
+LexiconStyleWidget::LexiconStyleWidget(QWidget *parent, Qt::WindowFlags f)
     : QWidget(parent, f)
 {
-    QHBoxLayout* mainHlay = new QHBoxLayout(this);
+    QHBoxLayout *mainHlay = new QHBoxLayout(this);
     Q_CHECK_PTR(mainHlay);
     mainHlay->setSpacing(SPACING);
 
-    QLabel* lexiconLabel = new QLabel;
+    QLabel *lexiconLabel = new QLabel;
     Q_CHECK_PTR(lexiconLabel);
     lexiconLabel->setText("Lexicon:");
     mainHlay->addWidget(lexiconLabel);
 
     QStringList validLexicons;
-    validLexicons.append(LEXICON_CSW21);
+    validLexicons.append(LEXICON_CSW24);
     validLexicons.append(LEXICON_CUSTOM);
     qSort(validLexicons.begin(), validLexicons.end(),
           Auxil::localeAwareLessThanQString);
@@ -68,7 +68,7 @@ LexiconStyleWidget::LexiconStyleWidget(QWidget* parent, Qt::WindowFlags f)
     QString defaultLexicon = MainSettings::getDefaultLexicon();
     int defaultIndex = validLexicons.indexOf(defaultLexicon);
     if (defaultIndex < 0)
-        defaultIndex = validLexicons.indexOf(LEXICON_CSW21);
+        defaultIndex = validLexicons.indexOf(LEXICON_CSW24);
 
     lexiconCombo = new QComboBox;
     Q_CHECK_PTR(lexiconCombo);
@@ -89,7 +89,7 @@ LexiconStyleWidget::LexiconStyleWidget(QWidget* parent, Qt::WindowFlags f)
     compareLexiconCombo->setCurrentIndex(defaultIndex);
     mainHlay->addWidget(compareLexiconCombo);
 
-    QLabel* symbolLabel = new QLabel;
+    QLabel *symbolLabel = new QLabel;
     Q_CHECK_PTR(symbolLabel);
     symbolLabel->setText("symbol:");
     mainHlay->addWidget(symbolLabel);
@@ -101,7 +101,7 @@ LexiconStyleWidget::LexiconStyleWidget(QWidget* parent, Qt::WindowFlags f)
         new QRegExpValidator(QRegExp("^[^\\w\\s]+$"), this));
     mainHlay->addWidget(symbolLine);
 
-    QPushButton* deleteButton = new QPushButton;
+    QPushButton *deleteButton = new QPushButton;
     Q_CHECK_PTR(deleteButton);
     deleteButton->setIcon(QIcon(":/minus-icon"));
     connect(deleteButton, SIGNAL(clicked()), SIGNAL(deleteClicked()));
@@ -115,8 +115,7 @@ LexiconStyleWidget::LexiconStyleWidget(QWidget* parent, Qt::WindowFlags f)
 //
 //! @param style the lexicon style
 //---------------------------------------------------------------------------
-bool
-LexiconStyleWidget::setLexiconStyle(const LexiconStyle& style)
+bool LexiconStyleWidget::setLexiconStyle(const LexiconStyle &style)
 {
     if (!style.isValid())
         return false;

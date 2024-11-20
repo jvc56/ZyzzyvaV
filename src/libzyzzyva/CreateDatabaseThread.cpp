@@ -43,8 +43,7 @@ using namespace Defs;
 //
 //! Create the database.
 //---------------------------------------------------------------------------
-void
-CreateDatabaseThread::run()
+void CreateDatabaseThread::run()
 {
     runPrivate();
 }
@@ -54,8 +53,7 @@ CreateDatabaseThread::run()
 //
 //! Create the database.
 //---------------------------------------------------------------------------
-void
-CreateDatabaseThread::runPrivate()
+void CreateDatabaseThread::runPrivate()
 {
     int numSteps = 0;
 
@@ -64,9 +62,9 @@ CreateDatabaseThread::runPrivate()
         QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE",
                                                     DB_CONNECTION_NAME);
         db.setDatabaseName(dbFilename);
-        if (!db.open()) {
-            error = QString("Unable to open database file '%1':\n%2").arg(
-                dbFilename).arg(db.lastError().text());
+        if (!db.open())
+        {
+            error = QString("Unable to open database file '%1':\n%2").arg(dbFilename).arg(db.lastError().text());
             cancel();
         }
 
@@ -107,26 +105,25 @@ CreateDatabaseThread::runPrivate()
 //
 //! @param db the database
 //---------------------------------------------------------------------------
-void
-CreateDatabaseThread::createTables(QSqlDatabase& db)
+void CreateDatabaseThread::createTables(QSqlDatabase &db)
 {
-    QSqlQuery query (db);
+    QSqlQuery query(db);
 
     query.exec("CREATE TABLE words (word text, length integer, "
-        "playability float, playability_order integer, "
-        "min_playability_order integer, max_playability_order integer, "
-        "combinations0 integer, probability_order0 integer, "
-        "min_probability_order0 integer, max_probability_order0 integer, "
-        "combinations1 integer, probability_order1 integer, "
-        "min_probability_order1 integer, max_probability_order1 integer, "
-        "combinations2 integer, probability_order2 integer, "
-        "min_probability_order2 integer, max_probability_order2 integer, "
-        "alphagram text, num_anagrams integer, "
-        "num_unique_letters integer, num_vowels integer, "
-        "point_value integer, front_hooks text, "
-        "back_hooks text, is_front_hook integer, "
-        "is_back_hook integer, lexicon_symbols text, "
-        "definition text)");
+               "playability float, playability_order integer, "
+               "min_playability_order integer, max_playability_order integer, "
+               "combinations0 integer, probability_order0 integer, "
+               "min_probability_order0 integer, max_probability_order0 integer, "
+               "combinations1 integer, probability_order1 integer, "
+               "min_probability_order1 integer, max_probability_order1 integer, "
+               "combinations2 integer, probability_order2 integer, "
+               "min_probability_order2 integer, max_probability_order2 integer, "
+               "alphagram text, num_anagrams integer, "
+               "num_unique_letters integer, num_vowels integer, "
+               "point_value integer, front_hooks text, "
+               "back_hooks text, is_front_hook integer, "
+               "is_back_hook integer, lexicon_symbols text, "
+               "definition text)");
 
     query.exec("CREATE TABLE db_version (version integer)");
     query.exec("INSERT into db_version (version) VALUES (" +
@@ -151,10 +148,9 @@ CreateDatabaseThread::createTables(QSqlDatabase& db)
 //! @param db the database
 //! @param stepNum the current step number
 //---------------------------------------------------------------------------
-void
-CreateDatabaseThread::createIndexes(QSqlDatabase& db)
+void CreateDatabaseThread::createIndexes(QSqlDatabase &db)
 {
-    QSqlQuery query (db);
+    QSqlQuery query(db);
 
     // Indexes on words table
     query.exec("CREATE UNIQUE INDEX word_index on words (word)");
@@ -219,14 +215,11 @@ CreateDatabaseThread::createIndexes(QSqlDatabase& db)
 //! @param db the database
 //! @param stepNum the current step number
 //---------------------------------------------------------------------------
-void
-CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
+void CreateDatabaseThread::insertWords(QSqlDatabase &db, int &stepNum)
 {
     LetterBag letterBag;
     QStringList letters;
-    letters << "A" << "B" << "C" << "D" << "E" << "F" << "G" << "H" <<
-        "I" << "J" << "K" << "L" << "M" << "N" << "O" << "P" << "Q" <<
-        "R" << "S" << "T" << "U" << "V" << "W" << "X" << "Y" << "Z";
+    letters << "A" << "B" << "C" << "D" << "E" << "F" << "G" << "H" << "I" << "J" << "K" << "L" << "M" << "N" << "O" << "P" << "Q" << "R" << "S" << "T" << "U" << "V" << "W" << "X" << "Y" << "Z";
 
     SearchCondition searchCondition;
     searchCondition.type = SearchCondition::Length;
@@ -234,9 +227,10 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
     searchSpec.conditions.append(searchCondition);
 
     QList<LexiconStyle> lexStyles = MainSettings::getWordListLexiconStyles();
-    QMutableListIterator<LexiconStyle> it (lexStyles);
-    while (it.hasNext()) {
-        const LexiconStyle& style = it.next();
+    QMutableListIterator<LexiconStyle> it(lexStyles);
+    while (it.hasNext())
+    {
+        const LexiconStyle &style = it.next();
         if ((style.lexicon != lexiconName) ||
             !wordEngine->lexiconIsLoaded(style.compareLexicon))
         {
@@ -246,15 +240,16 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
 
     QMap<QString, double> playabilityMap;
     QString playabilityFile = Auxil::getWordsDir() +
-        Auxil::getLexiconPrefix(lexiconName) + (lexiconName == LEXICON_CSW21 ? "-Playability.bin" : "-Playability.txt");
+                              Auxil::getLexiconPrefix(lexiconName) + (lexiconName == LEXICON_CSW24 ? "-Playability.bin" : "-Playability.txt");
     importPlayability(playabilityFile, playabilityMap);
 
-    QSqlQuery transactionQuery ("BEGIN TRANSACTION", db);
-    QSqlQuery query (db);
+    QSqlQuery transactionQuery("BEGIN TRANSACTION", db);
+    QSqlQuery query(db);
 
     QMap<QString, qint64> numAnagramsMap;
 
-    for (int length = 1; length <= MAX_WORD_LEN; ++length) {
+    for (int length = 1; length <= MAX_WORD_LEN; ++length)
+    {
         searchSpec.conditions[0].minValue = length;
         searchSpec.conditions[0].maxValue = length;
 
@@ -270,7 +265,8 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
                       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         // Insert words with length, combinations, hooks
-        foreach (const QString& word, words) {
+        foreach (const QString &word, words)
+        {
             double playability = playabilityMap.value(word);
             double combinations0 = letterBag.getNumCombinations(word, 0);
             double combinations1 = letterBag.getNumCombinations(word, 1);
@@ -279,7 +275,8 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
             int numVowels = Auxil::getNumVowels(word);
 
             int pointValue = 0;
-            for (int i = 0; i < word.length(); ++i) {
+            for (int i = 0; i < word.length(); ++i)
+            {
                 pointValue += letterBag.getLetterValue(word.at(i));
             }
 
@@ -290,12 +287,17 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
                 numAnagramsMap[alphagram] = 1;
 
             int isFrontHook = wordEngine->isAcceptable(
-                lexiconName, word.right(word.length() - 1)) ? 1 : 0;
+                                  lexiconName, word.right(word.length() - 1))
+                                  ? 1
+                                  : 0;
             int isBackHook = wordEngine->isAcceptable(
-                lexiconName, word.left(word.length() - 1)) ? 1 : 0;
+                                 lexiconName, word.left(word.length() - 1))
+                                 ? 1
+                                 : 0;
 
             QString front, back;
-            foreach (const QString& letter, letters) {
+            foreach (const QString &letter, letters)
+            {
                 if (wordEngine->isAcceptable(lexiconName, letter + word))
                     front += letter;
                 if (wordEngine->isAcceptable(lexiconName, word + letter))
@@ -304,10 +306,12 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
 
             // Populate words and hooks with symbols
             QString symbolStr;
-            if (!lexStyles.isEmpty()) {
-                QListIterator<LexiconStyle> it (lexStyles);
-                while (it.hasNext()) {
-                    const LexiconStyle& style = it.next();
+            if (!lexStyles.isEmpty())
+            {
+                QListIterator<LexiconStyle> it(lexStyles);
+                while (it.hasNext())
+                {
+                    const LexiconStyle &style = it.next();
                     bool acceptable =
                         wordEngine->isAcceptable(style.compareLexicon, word);
                     if (!(acceptable ^ style.inCompareLexicon))
@@ -315,17 +319,20 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
                 }
 
                 // Populate front hooks with symbols
-                for (int i = 0; i < front.length(); ++i) {
+                for (int i = 0; i < front.length(); ++i)
+                {
                     QChar c = front[i];
                     QString hookWord = c.toUpper() + word;
 
                     it.toFront();
-                    while (it.hasNext()) {
-                        const LexiconStyle& style = it.next();
+                    while (it.hasNext())
+                    {
+                        const LexiconStyle &style = it.next();
                         bool acceptable = wordEngine->isAcceptable(
                             style.compareLexicon, hookWord);
 
-                        if (!(acceptable ^ style.inCompareLexicon)) {
+                        if (!(acceptable ^ style.inCompareLexicon))
+                        {
                             front.insert(i + 1, style.symbol);
                             i += style.symbol.length();
                         }
@@ -333,17 +340,20 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
                 }
 
                 // Populate back hooks with symbols
-                for (int i = 0; i < back.length(); ++i) {
+                for (int i = 0; i < back.length(); ++i)
+                {
                     QChar c = back[i];
                     QString hookWord = word + c.toUpper();
 
                     it.toFront();
-                    while (it.hasNext()) {
-                        const LexiconStyle& style = it.next();
+                    while (it.hasNext())
+                    {
+                        const LexiconStyle &style = it.next();
                         bool acceptable = wordEngine->isAcceptable(
                             style.compareLexicon, hookWord);
 
-                        if (!(acceptable ^ style.inCompareLexicon)) {
+                        if (!(acceptable ^ style.inCompareLexicon))
+                        {
                             back.insert(i + 1, style.symbol);
                             i += style.symbol.length();
                         }
@@ -369,8 +379,10 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
             query.bindValue(bindNum++, symbolStr);
             query.exec();
 
-            if ((stepNum % PROGRESS_STEP) == 0) {
-                if (cancelled) {
+            if ((stepNum % PROGRESS_STEP) == 0)
+            {
+                if (cancelled)
+                {
                     transactionQuery.exec("END TRANSACTION");
                     return;
                 }
@@ -381,14 +393,17 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
 
         // Update number of anagrams
         query.prepare("UPDATE words SET num_anagrams=? WHERE word=?");
-        foreach (const QString& word, words) {
+        foreach (const QString &word, words)
+        {
             QString alphagram = Auxil::getAlphagram(word);
             query.bindValue(0, numAnagramsMap[alphagram]);
             query.bindValue(1, word);
             query.exec();
 
-            if ((stepNum % PROGRESS_STEP) == 0) {
-                if (cancelled) {
+            if ((stepNum % PROGRESS_STEP) == 0)
+            {
+                if (cancelled)
+                {
                     transactionQuery.exec("END TRANSACTION");
                     return;
                 }
@@ -409,27 +424,32 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
 //! @param db the database
 //! @param stepNum the current step number
 //---------------------------------------------------------------------------
-void
-CreateDatabaseThread::updateProbabilityOrder(QSqlDatabase& db, int& stepNum)
+void CreateDatabaseThread::updateProbabilityOrder(QSqlDatabase &db, int &stepNum)
 {
-    QSqlQuery transactionQuery ("BEGIN TRANSACTION", db);
+    QSqlQuery transactionQuery("BEGIN TRANSACTION", db);
 
-    for (int numBlanks = -1; numBlanks <= 2; ++numBlanks) {
+    for (int numBlanks = -1; numBlanks <= 2; ++numBlanks)
+    {
         QString valueCol = (numBlanks < 0 ? "playability"
-            : QString("combinations%1").arg(numBlanks));
+                                          : QString("combinations%1").arg(numBlanks));
         QString orderCol = (numBlanks < 0 ? "playability_order"
-            : QString("probability_order%1").arg(numBlanks));
+                                          : QString("probability_order%1").arg(numBlanks));
         QString minOrderCol = "min_" + orderCol;
         QString maxOrderCol = "max_" + orderCol;
 
-        QSqlQuery updateQuery (db);
+        QSqlQuery updateQuery(db);
         updateQuery.prepare(QString("UPDATE words SET %1=?, %2=?, %3=? "
-            "WHERE word=?").arg(orderCol).arg(minOrderCol).arg(maxOrderCol));
+                                    "WHERE word=?")
+                                .arg(orderCol)
+                                .arg(minOrderCol)
+                                .arg(maxOrderCol));
 
-        for (int length = 1; length <= MAX_WORD_LEN; ++length) {
-            QSqlQuery selectQuery (db);
+        for (int length = 1; length <= MAX_WORD_LEN; ++length)
+        {
+            QSqlQuery selectQuery(db);
             selectQuery.prepare(QString("SELECT word, %1 FROM words "
-                "WHERE length=? ORDER BY %1 DESC").arg(valueCol));
+                                        "WHERE length=? ORDER BY %1 DESC")
+                                    .arg(valueCol));
 
             selectQuery.bindValue(0, length);
             selectQuery.exec();
@@ -439,15 +459,18 @@ CreateDatabaseThread::updateProbabilityOrder(QSqlDatabase& db, int& stepNum)
             int minOrder = 1;
             double prevValue = 0;
 
-            while (selectQuery.next()) {
+            while (selectQuery.next())
+            {
                 QString word = selectQuery.value(0).toString();
                 double value = selectQuery.value(1).toDouble();
 
                 // Update probability ranges
-                if ((value != prevValue) && !equalWordMap.empty()) {
+                if ((value != prevValue) && !equalWordMap.empty())
+                {
                     int maxOrder = minOrder + equalWordMap.size() - 1;
-                    QMapIterator<QString, QString> jt (equalWordMap);
-                    while (jt.hasNext()) {
+                    QMapIterator<QString, QString> jt(equalWordMap);
+                    while (jt.hasNext())
+                    {
                         jt.next();
                         QString equalWord = jt.value();
                         updateQuery.bindValue(0, order);
@@ -456,8 +479,10 @@ CreateDatabaseThread::updateProbabilityOrder(QSqlDatabase& db, int& stepNum)
                         updateQuery.bindValue(3, equalWord);
                         updateQuery.exec();
 
-                        if ((stepNum % PROGRESS_STEP) == 0) {
-                            if (cancelled) {
+                        if ((stepNum % PROGRESS_STEP) == 0)
+                        {
+                            if (cancelled)
+                            {
                                 transactionQuery.exec("END TRANSACTION");
                                 return;
                             }
@@ -479,8 +504,9 @@ CreateDatabaseThread::updateProbabilityOrder(QSqlDatabase& db, int& stepNum)
             }
 
             int maxOrder = minOrder + equalWordMap.size() - 1;
-            QMapIterator<QString, QString> jt (equalWordMap);
-            while (jt.hasNext()) {
+            QMapIterator<QString, QString> jt(equalWordMap);
+            while (jt.hasNext())
+            {
                 jt.next();
                 QString equalWord = jt.value();
                 updateQuery.bindValue(0, order);
@@ -514,23 +540,24 @@ CreateDatabaseThread::updateProbabilityOrder(QSqlDatabase& db, int& stepNum)
 //! @param db the database
 //! @param stepNum the current step number
 //---------------------------------------------------------------------------
-void
-CreateDatabaseThread::updateDefinitions(QSqlDatabase& db, int& stepNum)
+void CreateDatabaseThread::updateDefinitions(QSqlDatabase &db, int &stepNum)
 {
-    QSqlQuery transactionQuery ("BEGIN TRANSACTION", db);
+    QSqlQuery transactionQuery("BEGIN TRANSACTION", db);
 
-    QSqlQuery query (db);
+    QSqlQuery query(db);
     query.prepare("UPDATE words SET definition=? WHERE word=?");
 
     QMap<QString, QString> definitionMap;
-    QFile definitionFile (definitionFilename);
+    QFile definitionFile(definitionFilename);
 
-      // (JGM)
-//    QFile debugFile (definitionFilename + "-debug.txt");
-//    debugFile.open(QIODevice::WriteOnly);
+    // (JGM)
+    //    QFile debugFile (definitionFilename + "-debug.txt");
+    //    debugFile.open(QIODevice::WriteOnly);
 
-    if (lexiconName == LEXICON_CSW21) {   // (JGM) definitionFile is encrypted.
-        if (!definitionFile.open(QIODevice::ReadOnly)) {
+    if (lexiconName == LEXICON_CSW24)
+    { // (JGM) definitionFile is encrypted.
+        if (!definitionFile.open(QIODevice::ReadOnly))
+        {
             return;
         }
         QByteArray *fileBlob = new QByteArray(definitionFile.readAll());
@@ -553,17 +580,21 @@ CreateDatabaseThread::updateDefinitions(QSqlDatabase& db, int& stepNum)
         int lineLength;
         char *nextNewline;
         bool readNewline = true;
-        while (1) {
+        while (1)
+        {
             nextNewline = strchr(plaintext, '\n');
-            if (!nextNewline) break;
+            if (!nextNewline)
+                break;
 
             lineLength = nextNewline - plaintext + 1;
-            if (lineLength <= MAX_INPUT_LINE_LEN - 1) {
+            if (lineLength <= MAX_INPUT_LINE_LEN - 1)
+            {
                 memcpy(buffer, plaintext, (lineLength) * sizeof(char));
                 buffer[lineLength] = '\0';
                 plaintext = nextNewline + 1;
             }
-            else {
+            else
+            {
                 memcpy(buffer, plaintext, (MAX_INPUT_LINE_LEN - 1) * sizeof(char));
                 buffer[MAX_INPUT_LINE_LEN - 1] = '\0';
                 plaintext += (MAX_INPUT_LINE_LEN - 1);
@@ -574,14 +605,18 @@ CreateDatabaseThread::updateDefinitions(QSqlDatabase& db, int& stepNum)
             // until we see a newline (effectively truncating long lines)
             bool skip = !readNewline;
             readNewline = line.endsWith("\n");
-            if (skip) {
+            if (skip)
+            {
                 continue;
             }
 
             line = line.simplified();
-            if (!line.length() || (line.at(0) == '#')) {
-                if ((stepNum % PROGRESS_STEP) == 0) {
-                    if (cancelled) {
+            if (!line.length() || (line.at(0) == '#'))
+            {
+                if ((stepNum % PROGRESS_STEP) == 0)
+                {
+                    if (cancelled)
+                    {
                         transactionQuery.exec("END TRANSACTION");
                         delete[] plaintextAllocation;
                         definitionFile.close();
@@ -599,8 +634,10 @@ CreateDatabaseThread::updateDefinitions(QSqlDatabase& db, int& stepNum)
             query.bindValue(1, word);
             query.exec();
 
-            if ((stepNum % PROGRESS_STEP) == 0) {
-                if (cancelled) {
+            if ((stepNum % PROGRESS_STEP) == 0)
+            {
+                if (cancelled)
+                {
                     transactionQuery.exec("END TRANSACTION");
                     delete[] plaintextAllocation;
                     definitionFile.close();
@@ -612,8 +649,10 @@ CreateDatabaseThread::updateDefinitions(QSqlDatabase& db, int& stepNum)
         }
         delete[] plaintextAllocation;
     }
-    else {   // (JGM) definitionFile is in plain text.
-        if (!definitionFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    else
+    { // (JGM) definitionFile is in plain text.
+        if (!definitionFile.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
             return;
         }
 
@@ -623,8 +662,9 @@ CreateDatabaseThread::updateDefinitions(QSqlDatabase& db, int& stepNum)
 
         bool readNewline = true;
         char buffer[MAX_INPUT_LINE_LEN * 2 + 1];
-        while (definitionFile.readLine(buffer, MAX_INPUT_LINE_LEN) > 0) {
-            QString line (buffer);
+        while (definitionFile.readLine(buffer, MAX_INPUT_LINE_LEN) > 0)
+        {
+            QString line(buffer);
 
             // If first line didn't contain newline, skip subsequent reads
             // until we see a newline (effectively truncating long lines)
@@ -634,9 +674,12 @@ CreateDatabaseThread::updateDefinitions(QSqlDatabase& db, int& stepNum)
                 continue;
 
             line = line.simplified();
-            if (!line.length() || (line.at(0) == '#')) {
-                if ((stepNum % PROGRESS_STEP) == 0) {
-                    if (cancelled) {
+            if (!line.length() || (line.at(0) == '#'))
+            {
+                if ((stepNum % PROGRESS_STEP) == 0)
+                {
+                    if (cancelled)
+                    {
                         transactionQuery.exec("END TRANSACTION");
                         definitionFile.close();
                         return;
@@ -653,8 +696,10 @@ CreateDatabaseThread::updateDefinitions(QSqlDatabase& db, int& stepNum)
             query.bindValue(1, word);
             query.exec();
 
-            if ((stepNum % PROGRESS_STEP) == 0) {
-                if (cancelled) {
+            if ((stepNum % PROGRESS_STEP) == 0)
+            {
+                if (cancelled)
+                {
                     transactionQuery.exec("END TRANSACTION");
                     definitionFile.close();
                     return;
@@ -674,8 +719,7 @@ CreateDatabaseThread::updateDefinitions(QSqlDatabase& db, int& stepNum)
 //! Cancel the creation of this database.  Set the cancelled flag so the
 //! operation will be stopped and the database will be deleted.
 //---------------------------------------------------------------------------
-void
-CreateDatabaseThread::cancel()
+void CreateDatabaseThread::cancel()
 {
     cancelled = true;
 }
@@ -685,8 +729,7 @@ CreateDatabaseThread::cancel()
 //
 //! Clean up open database handles.
 //---------------------------------------------------------------------------
-void
-CreateDatabaseThread::cleanup()
+void CreateDatabaseThread::cleanup()
 {
     QSqlDatabase::removeDatabase(DB_CONNECTION_NAME);
 }
@@ -699,29 +742,30 @@ CreateDatabaseThread::cleanup()
 //! @param db the database
 //! @param stepNum the current step number
 //---------------------------------------------------------------------------
-void
-CreateDatabaseThread::updateDefinitionLinks(QSqlDatabase& db, int& stepNum)
+void CreateDatabaseThread::updateDefinitionLinks(QSqlDatabase &db, int &stepNum)
 {
     getDefinitions(db, stepNum);
 
     if (cancelled)
         return;
 
-    QSqlQuery updateQuery (db);
+    QSqlQuery updateQuery(db);
     updateQuery.prepare("UPDATE words SET definition=? WHERE word=?");
 
-    QSqlQuery transactionQuery ("BEGIN TRANSACTION", db);
+    QSqlQuery transactionQuery("BEGIN TRANSACTION", db);
 
     QSet<QString> alreadyReplaced;
-    QMapIterator<QString, QString> it (definitions);
-    while (it.hasNext()) {
+    QMapIterator<QString, QString> it(definitions);
+    while (it.hasNext())
+    {
         it.next();
         QString word = it.key();
         QString definition = it.value();
 
         QStringList defs = definition.split(" / ");
         QString newDefinition;
-        foreach (const QString& def, defs) {
+        foreach (const QString &def, defs)
+        {
             if (!newDefinition.isEmpty())
                 newDefinition += " / ";
 
@@ -729,10 +773,11 @@ CreateDatabaseThread::updateDefinitionLinks(QSqlDatabase& db, int& stepNum)
             alreadyReplaced.insert(word.toUpper());
 
             newDefinition += replaceDefinitionLinks(def, MAX_DEFINITION_LINKS,
-                &alreadyReplaced);
+                                                    &alreadyReplaced);
         }
 
-        if (definition != newDefinition) {
+        if (definition != newDefinition)
+        {
             updateQuery.bindValue(0, newDefinition);
             updateQuery.bindValue(1, word);
             updateQuery.exec();
@@ -740,8 +785,10 @@ CreateDatabaseThread::updateDefinitionLinks(QSqlDatabase& db, int& stepNum)
 
         ++stepNum;
 
-        if ((stepNum % PROGRESS_STEP) == 0) {
-            if (cancelled) {
+        if ((stepNum % PROGRESS_STEP) == 0)
+        {
+            if (cancelled)
+            {
                 transactionQuery.exec("END TRANSACTION");
                 return;
             }
@@ -761,22 +808,24 @@ CreateDatabaseThread::updateDefinitionLinks(QSqlDatabase& db, int& stepNum)
 //! @param db the database
 //! @param stepNum the current step number
 //---------------------------------------------------------------------------
-void
-CreateDatabaseThread::getDefinitions(QSqlDatabase& db, int& stepNum)
+void CreateDatabaseThread::getDefinitions(QSqlDatabase &db, int &stepNum)
 {
-    QSqlQuery selectQuery (db);
+    QSqlQuery selectQuery(db);
     selectQuery.prepare("SELECT word, definition FROM words");
     selectQuery.exec();
 
-    QRegExp defRegex (QString("^[^[]|\\s+/\\s+[^[]"));
+    QRegExp defRegex(QString("^[^[]|\\s+/\\s+[^[]"));
 
-    while (selectQuery.next()) {
+    while (selectQuery.next())
+    {
         QString word = selectQuery.value(0).toString();
         QString definition = selectQuery.value(1).toString();
 
-        if (defRegex.indexIn(definition, 0) < 0) {
+        if (defRegex.indexIn(definition, 0) < 0)
+        {
             ++stepNum;
-            if ((stepNum % PROGRESS_STEP) == 0) {
+            if ((stepNum % PROGRESS_STEP) == 0)
+            {
                 if (cancelled)
                     return;
                 emit progress(stepNum);
@@ -802,14 +851,15 @@ CreateDatabaseThread::getDefinitions(QSqlDatabase& db, int& stepNum)
 //! @return a string with links replaced
 //---------------------------------------------------------------------------
 QString
-CreateDatabaseThread::replaceDefinitionLinks(const QString& definition,
-    int maxDepth, QSet<QString>* alreadyReplaced, bool useFollow) const
+CreateDatabaseThread::replaceDefinitionLinks(const QString &definition,
+                                             int maxDepth, QSet<QString> *alreadyReplaced, bool useFollow) const
 {
-    QRegExp followRegex (QString("\\{(\\w+)=(\\w+)\\}"));
-    QRegExp replaceRegex (QString("\\<(\\w+)=(\\w+)\\>"));
+    QRegExp followRegex(QString("\\{(\\w+)=(\\w+)\\}"));
+    QRegExp replaceRegex(QString("\\<(\\w+)=(\\w+)\\>"));
 
     bool createdSet = false;
-    if (!alreadyReplaced) {
+    if (!alreadyReplaced)
+    {
         alreadyReplaced = new QSet<QString>;
         createdSet = true;
     }
@@ -817,24 +867,27 @@ CreateDatabaseThread::replaceDefinitionLinks(const QString& definition,
     // Try to match the follow regex and the replace regex.  If a follow regex
     // is ever matched, then the "follow" replacements should always be used,
     // even if the "replace" regex is matched in a later iteration.
-    QRegExp* matchedRegex = 0;
+    QRegExp *matchedRegex = 0;
     int index = followRegex.indexIn(definition, 0);
-    if (index >= 0) {
+    if (index >= 0)
+    {
         matchedRegex = &followRegex;
         useFollow = true;
     }
-    else {
+    else
+    {
         index = replaceRegex.indexIn(definition, 0);
         matchedRegex = &replaceRegex;
     }
 
-    if (index < 0) {
+    if (index < 0)
+    {
         if (createdSet)
             delete alreadyReplaced;
         return definition;
     }
 
-    QString modified (definition);
+    QString modified(definition);
     QString word = matchedRegex->cap(1);
     QString pos = matchedRegex->cap(2);
 
@@ -842,20 +895,24 @@ CreateDatabaseThread::replaceDefinitionLinks(const QString& definition,
     QString upper = word.toUpper();
     QString failReplacement = useFollow ? word : upper;
     bool cutRecursion = !maxDepth || alreadyReplaced->contains(upper);
-    if (cutRecursion) {
+    if (cutRecursion)
+    {
         replacement = failReplacement;
     }
-    else {
+    else
+    {
         QString subdef = getSubDefinition(upper, pos);
-        if (subdef.isEmpty()) {
+        if (subdef.isEmpty())
+        {
             replacement = failReplacement;
             cutRecursion = true;
         }
-        else if (useFollow) {
-            replacement = (matchedRegex == &followRegex) ?
-                word + " (" + subdef + ")" : subdef;
+        else if (useFollow)
+        {
+            replacement = (matchedRegex == &followRegex) ? word + " (" + subdef + ")" : subdef;
         }
-        else {
+        else
+        {
             replacement = upper + ", " + subdef;
         }
         alreadyReplaced->insert(upper);
@@ -864,10 +921,11 @@ CreateDatabaseThread::replaceDefinitionLinks(const QString& definition,
     modified.replace(index, matchedRegex->matchedLength(), replacement);
     int lowerMaxDepth = useFollow ? maxDepth - 1 : maxDepth;
     QString newDefinition = cutRecursion ? modified
-        : replaceDefinitionLinks(modified, lowerMaxDepth, alreadyReplaced,
-            useFollow);
+                                         : replaceDefinitionLinks(modified, lowerMaxDepth, alreadyReplaced,
+                                                                  useFollow);
 
-    if (createdSet) {
+    if (createdSet)
+    {
         delete alreadyReplaced;
     }
 
@@ -887,16 +945,17 @@ CreateDatabaseThread::replaceDefinitionLinks(const QString& definition,
 //! @return the definition substring
 //---------------------------------------------------------------------------
 QString
-CreateDatabaseThread::getSubDefinition(const QString& word, const QString&
-                                       pos) const
+CreateDatabaseThread::getSubDefinition(const QString &word, const QString &
+                                                                pos) const
 {
     if (!definitions.contains(word))
         return QString();
 
     QString definition = definitions[word];
-    QRegExp posRegex (QString("\\[(\\w+)"));
+    QRegExp posRegex(QString("\\[(\\w+)"));
     QStringList defs = definition.split(" / ");
-    foreach (const QString& def, defs) {
+    foreach (const QString &def, defs)
+    {
         if ((posRegex.indexIn(def, 0) > 0) &&
             (posRegex.cap(1) == pos))
         {
@@ -928,84 +987,93 @@ CreateDatabaseThread::getSubDefinition(const QString& word, const QString&
 //! @param errString returns the error string in case of error
 //! @return the number of playability values imported
 //---------------------------------------------------------------------------
-int
-CreateDatabaseThread::importPlayability(const QString& filename,
-    QMap<QString, double>& playabilityMap) const
+int CreateDatabaseThread::importPlayability(const QString &filename,
+                                            QMap<QString, double> &playabilityMap) const
 {
     playabilityMap.clear();
 
-    QFile file (filename);
+    QFile file(filename);
 
-    if (lexiconName == LEXICON_CSW21) {   // (JGM) Playability file is encrypted.
-        if (!file.open(QIODevice::ReadOnly)) {
+    if (lexiconName == LEXICON_CSW24)
+    { // (JGM) Playability file is encrypted.
+        if (!file.open(QIODevice::ReadOnly))
+        {
             return 0;
         }
         QByteArray *fileBlob = new QByteArray(file.readAll());
         file.close();
 
-      // (JGM) Discard header line if appropriate.
-      if (lexiconName != LEXICON_CUSTOM)
-          fileBlob->remove(0, fileBlob->indexOf('\n') + 1);
-      SimpleCrypt crypto(Auxil::getCryptHash());
-      QByteArray *plaintextBlob = new QByteArray(crypto.decryptToByteArray(*fileBlob));
-      delete fileBlob;
+        // (JGM) Discard header line if appropriate.
+        if (lexiconName != LEXICON_CUSTOM)
+            fileBlob->remove(0, fileBlob->indexOf('\n') + 1);
+        SimpleCrypt crypto(Auxil::getCryptHash());
+        QByteArray *plaintextBlob = new QByteArray(crypto.decryptToByteArray(*fileBlob));
+        delete fileBlob;
 
-      char *plaintext = new char[plaintextBlob->size() + 1];
-      char *plaintextAllocation = plaintext;
-      strcpy(plaintext, plaintextBlob->constData());
-      delete plaintextBlob;
+        char *plaintext = new char[plaintextBlob->size() + 1];
+        char *plaintextAllocation = plaintext;
+        strcpy(plaintext, plaintextBlob->constData());
+        delete plaintextBlob;
 
-      int imported = 0;
-      char buffer[MAX_INPUT_LINE_LEN * 2 + 1];
-      int lineLength;
-      char *nextNewline;
-      bool readNewline = true;
-      while (1) {
-          nextNewline = strchr(plaintext, '\n');
-          if (!nextNewline) break;
+        int imported = 0;
+        char buffer[MAX_INPUT_LINE_LEN * 2 + 1];
+        int lineLength;
+        char *nextNewline;
+        bool readNewline = true;
+        while (1)
+        {
+            nextNewline = strchr(plaintext, '\n');
+            if (!nextNewline)
+                break;
 
-          lineLength = nextNewline - plaintext + 1;
-          if (lineLength <= MAX_INPUT_LINE_LEN - 1) {
-              memcpy(buffer, plaintext, (lineLength) * sizeof(char));
-              buffer[lineLength] = '\0';
-              plaintext = nextNewline + 1;
-          }
-          else {
-              memcpy(buffer, plaintext, (MAX_INPUT_LINE_LEN - 1) * sizeof(char));
-              buffer[MAX_INPUT_LINE_LEN - 1] = '\0';
-              plaintext += (MAX_INPUT_LINE_LEN - 1);
-          }
-          QString line (buffer);
+            lineLength = nextNewline - plaintext + 1;
+            if (lineLength <= MAX_INPUT_LINE_LEN - 1)
+            {
+                memcpy(buffer, plaintext, (lineLength) * sizeof(char));
+                buffer[lineLength] = '\0';
+                plaintext = nextNewline + 1;
+            }
+            else
+            {
+                memcpy(buffer, plaintext, (MAX_INPUT_LINE_LEN - 1) * sizeof(char));
+                buffer[MAX_INPUT_LINE_LEN - 1] = '\0';
+                plaintext += (MAX_INPUT_LINE_LEN - 1);
+            }
+            QString line(buffer);
 
-          // If first line didn't contain newline, skip subsequent reads
-          // until we see a newline (effectively truncating long lines)
-          bool skip = !readNewline;
-          readNewline = line.endsWith("\n");
-          if (skip) {
-              continue;
-          }
-          line = line.simplified();
-          if (line.isEmpty() || (line.at(0) == '#')) {
-              continue;
-          }
-          bool ok = false;
-          double playability = line.section(' ', 0, 0).toDouble(&ok);
-          if (!ok) {
-              continue;
-          }
-          QString word = line.section(' ', 1, 1);
-          if (word.isEmpty()) {
-              continue;
-          }
+            // If first line didn't contain newline, skip subsequent reads
+            // until we see a newline (effectively truncating long lines)
+            bool skip = !readNewline;
+            readNewline = line.endsWith("\n");
+            if (skip)
+            {
+                continue;
+            }
+            line = line.simplified();
+            if (line.isEmpty() || (line.at(0) == '#'))
+            {
+                continue;
+            }
+            bool ok = false;
+            double playability = line.section(' ', 0, 0).toDouble(&ok);
+            if (!ok)
+            {
+                continue;
+            }
+            QString word = line.section(' ', 1, 1);
+            if (word.isEmpty())
+            {
+                continue;
+            }
 
-          playabilityMap[word] = playability;
-          ++imported;
-
-      }
-      delete[] plaintextAllocation;
-      return imported;
+            playabilityMap[word] = playability;
+            ++imported;
+        }
+        delete[] plaintextAllocation;
+        return imported;
     }
-    else {   // (JGM) Playability file is in plain text.
+    else
+    { // (JGM) Playability file is in plain text.
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
             return 0;
 
@@ -1016,8 +1084,9 @@ CreateDatabaseThread::importPlayability(const QString& filename,
         int imported = 0;
         bool readNewline = true;
         char buffer[MAX_INPUT_LINE_LEN * 2 + 1];
-        while (file.readLine(buffer, MAX_INPUT_LINE_LEN) > 0) {
-            QString line (buffer);
+        while (file.readLine(buffer, MAX_INPUT_LINE_LEN) > 0)
+        {
+            QString line(buffer);
 
             // If first line didn't contain newline, skip subsequent reads
             // until we see a newline (effectively truncating long lines)

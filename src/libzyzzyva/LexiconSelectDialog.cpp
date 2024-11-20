@@ -34,7 +34,7 @@
 
 const QString DIALOG_CAPTION = "Select Lexicons";
 const QString INSTRUCTION_TEXT = "Select the lexicons to be loaded each time "
-    "the programme is started, and the default lexicon to be used.";
+                                 "the programme is started, and the default lexicon to be used.";
 
 using namespace Defs;
 
@@ -46,56 +46,57 @@ using namespace Defs;
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-LexiconSelectDialog::LexiconSelectDialog(QWidget* parent, Qt::WindowFlags f)
+LexiconSelectDialog::LexiconSelectDialog(QWidget *parent, Qt::WindowFlags f)
     : QDialog(parent, f)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout(this);
+    QVBoxLayout *mainVlay = new QVBoxLayout(this);
     Q_CHECK_PTR(mainVlay);
 
-    QLabel* instructionLabel = new QLabel;
+    QLabel *instructionLabel = new QLabel;
     Q_CHECK_PTR(instructionLabel);
     instructionLabel->setWordWrap(true);
     instructionLabel->setText(INSTRUCTION_TEXT);
     mainVlay->addWidget(instructionLabel);
 
-    QGridLayout* mainGlay = new QGridLayout;
+    QGridLayout *mainGlay = new QGridLayout;
     Q_CHECK_PTR(mainGlay);
     mainVlay->addLayout(mainGlay);
 
-    QLabel* defaultHeaderLabel = new QLabel;
+    QLabel *defaultHeaderLabel = new QLabel;
     Q_CHECK_PTR(defaultHeaderLabel);
     defaultHeaderLabel->setText("Default");
     mainGlay->addWidget(defaultHeaderLabel, 0, 0, Qt::AlignHCenter);
 
-    QLabel* loadHeaderLabel = new QLabel;
+    QLabel *loadHeaderLabel = new QLabel;
     Q_CHECK_PTR(loadHeaderLabel);
     loadHeaderLabel->setText("Load");
     mainGlay->addWidget(loadHeaderLabel, 0, 1, Qt::AlignHCenter);
 
-    QLabel* lexiconHeaderLabel = new QLabel;
+    QLabel *lexiconHeaderLabel = new QLabel;
     Q_CHECK_PTR(lexiconHeaderLabel);
     lexiconHeaderLabel->setText("Lexicon");
     mainGlay->addWidget(lexiconHeaderLabel, 0, 2, Qt::AlignHCenter);
 
-    QLabel* originHeaderLabel = new QLabel;
+    QLabel *originHeaderLabel = new QLabel;
     Q_CHECK_PTR(originHeaderLabel);
     originHeaderLabel->setText("Origin");
     mainGlay->addWidget(originHeaderLabel, 0, 3, Qt::AlignHCenter);
 
-    QLabel* dateHeaderLabel = new QLabel;
+    QLabel *dateHeaderLabel = new QLabel;
     Q_CHECK_PTR(dateHeaderLabel);
     dateHeaderLabel->setText("Valid Date");
     mainGlay->addWidget(dateHeaderLabel, 0, 4, Qt::AlignHCenter);
 
     QStringList validLexicons;
-    validLexicons.append(LEXICON_CSW21);
+    validLexicons.append(LEXICON_CSW24);
     validLexicons.append(LEXICON_CUSTOM);
 
-    QStringListIterator it (validLexicons);
-    for (int row = 1; it.hasNext(); ++row) {
-        const QString& lexicon = it.next();
+    QStringListIterator it(validLexicons);
+    for (int row = 1; it.hasNext(); ++row)
+    {
+        const QString &lexicon = it.next();
 
-        QRadioButton* radioButton = new QRadioButton;
+        QRadioButton *radioButton = new QRadioButton;
         Q_CHECK_PTR(radioButton);
         if (row == 1)
             radioButton->setChecked(true);
@@ -104,25 +105,27 @@ LexiconSelectDialog::LexiconSelectDialog(QWidget* parent, Qt::WindowFlags f)
         mainGlay->addWidget(radioButton, row, 0, Qt::AlignHCenter);
         lexiconRadioButtons.insert(lexicon, radioButton);
 
-        QCheckBox* checkBox = new QCheckBox;
+        QCheckBox *checkBox = new QCheckBox;
         Q_CHECK_PTR(checkBox);
         if (row == 1)
             checkBox->setCheckState(Qt::Checked);
         mainGlay->addWidget(checkBox, row, 1, Qt::AlignHCenter);
-        if (lexicon == LEXICON_CUSTOM) {
+        if (lexicon == LEXICON_CUSTOM)
+        {
             connect(checkBox, SIGNAL(stateChanged(int)),
                     SLOT(customStateChanged(int)));
         }
         lexiconCheckBoxes.insert(lexicon, checkBox);
 
-        QLabel* lexiconLabel = new QLabel;
+        QLabel *lexiconLabel = new QLabel;
         Q_CHECK_PTR(lexiconLabel);
         lexiconLabel->setText(lexicon);
         mainGlay->addWidget(lexiconLabel, row, 2);
 
         // Create custom lexicon chooser for custom lexicon, or origin/date
         // labels for other lexicons
-        if (lexicon == LEXICON_CUSTOM) {
+        if (lexicon == LEXICON_CUSTOM)
+        {
             customLexiconLine = new QLineEdit;
             Q_CHECK_PTR(customLexiconLine);
             customLexiconLine->setEnabled(false);
@@ -138,10 +141,12 @@ LexiconSelectDialog::LexiconSelectDialog(QWidget* parent, Qt::WindowFlags f)
                     SLOT(customBrowseButtonClicked()));
             mainGlay->addWidget(customLexiconButton, row, 4);
         }
-        else {
+        else
+        {
             QString lexiconOrigin = Auxil::lexiconToOrigin(lexicon);
-            if (!lexiconOrigin.isEmpty()) {
-                QLabel* originLabel = new QLabel;
+            if (!lexiconOrigin.isEmpty())
+            {
+                QLabel *originLabel = new QLabel;
                 Q_CHECK_PTR(originLabel);
                 originLabel->setText(lexiconOrigin);
                 originLabel->setTextFormat(Qt::RichText);
@@ -151,8 +156,9 @@ LexiconSelectDialog::LexiconSelectDialog(QWidget* parent, Qt::WindowFlags f)
             }
 
             QDate lexiconDate = Auxil::lexiconToDate(lexicon);
-            if (lexiconDate.isValid()) {
-                QLabel* dateLabel = new QLabel;
+            if (lexiconDate.isValid())
+            {
+                QLabel *dateLabel = new QLabel;
                 Q_CHECK_PTR(dateLabel);
                 dateLabel->setText(lexiconDate.toString("MMMM d, yyyy"));
                 mainGlay->addWidget(dateLabel, row, 4);
@@ -162,7 +168,7 @@ LexiconSelectDialog::LexiconSelectDialog(QWidget* parent, Qt::WindowFlags f)
 
     mainVlay->addStretch(1);
 
-    QDialogButtonBox* buttonBox = new QDialogButtonBox;
+    QDialogButtonBox *buttonBox = new QDialogButtonBox;
     Q_CHECK_PTR(buttonBox);
     buttonBox->setOrientation(Qt::Horizontal);
     buttonBox->setStandardButtons(QDialogButtonBox::Ok |
@@ -194,11 +200,12 @@ QStringList
 LexiconSelectDialog::getImportLexicons() const
 {
     QStringList lexicons;
-    QMapIterator<QString, QCheckBox*> it (lexiconCheckBoxes);
-    while (it.hasNext()) {
+    QMapIterator<QString, QCheckBox *> it(lexiconCheckBoxes);
+    while (it.hasNext())
+    {
         it.next();
-        const QString& lexicon = it.key();
-        QCheckBox* checkBox = it.value();
+        const QString &lexicon = it.key();
+        QCheckBox *checkBox = it.value();
         if (checkBox->checkState() == Qt::Checked)
             lexicons.append(lexicon);
     }
@@ -215,11 +222,12 @@ LexiconSelectDialog::getImportLexicons() const
 QString
 LexiconSelectDialog::getDefaultLexicon() const
 {
-    QMapIterator<QString, QRadioButton*> it (lexiconRadioButtons);
-    while (it.hasNext()) {
+    QMapIterator<QString, QRadioButton *> it(lexiconRadioButtons);
+    while (it.hasNext())
+    {
         it.next();
-        const QString& lexicon = it.key();
-        QRadioButton* radioButton = it.value();
+        const QString &lexicon = it.key();
+        QRadioButton *radioButton = it.value();
         if (radioButton->isChecked())
             return lexicon;
     }
@@ -246,17 +254,17 @@ LexiconSelectDialog::getCustomLexiconFile() const
 //
 //! @param lexicons the list of lexicons
 //---------------------------------------------------------------------------
-void
-LexiconSelectDialog::setImportLexicons(const QStringList& lexicons)
+void LexiconSelectDialog::setImportLexicons(const QStringList &lexicons)
 {
     QSet<QString> lexiconSet = lexicons.toSet();
-    QMapIterator<QString, QCheckBox*> it (lexiconCheckBoxes);
-    while (it.hasNext()) {
+    QMapIterator<QString, QCheckBox *> it(lexiconCheckBoxes);
+    while (it.hasNext())
+    {
         it.next();
-        const QString& lexicon = it.key();
-        QCheckBox* checkBox = it.value();
+        const QString &lexicon = it.key();
+        QCheckBox *checkBox = it.value();
         checkBox->setCheckState(lexiconSet.contains(lexicon) ? Qt::Checked
-                                : Qt::Unchecked);
+                                                             : Qt::Unchecked);
     }
 }
 
@@ -267,15 +275,14 @@ LexiconSelectDialog::setImportLexicons(const QStringList& lexicons)
 //
 //! @param lexicon the default lexicon name
 //---------------------------------------------------------------------------
-void
-LexiconSelectDialog::setDefaultLexicon(const QString& lexicon)
+void LexiconSelectDialog::setDefaultLexicon(const QString &lexicon)
 {
-    QRadioButton* radioButton = lexiconRadioButtons.value(lexicon);
+    QRadioButton *radioButton = lexiconRadioButtons.value(lexicon);
     if (!radioButton)
         return;
     radioButton->setChecked(true);
 
-    QCheckBox* checkBox = lexiconCheckBoxes.value(lexicon);
+    QCheckBox *checkBox = lexiconCheckBoxes.value(lexicon);
     if (!checkBox)
         return;
     checkBox->setCheckState(Qt::Checked);
@@ -289,8 +296,7 @@ LexiconSelectDialog::setDefaultLexicon(const QString& lexicon)
 //
 //! @param filename the custom lexicon file
 //---------------------------------------------------------------------------
-void
-LexiconSelectDialog::setCustomLexiconFile(const QString& filename)
+void LexiconSelectDialog::setCustomLexiconFile(const QString &filename)
 {
     customLexiconLine->setText(filename);
 }
@@ -303,8 +309,7 @@ LexiconSelectDialog::setCustomLexiconFile(const QString& filename)
 //
 //! @param state the new checkbox state
 //---------------------------------------------------------------------------
-void
-LexiconSelectDialog::customStateChanged(int state)
+void LexiconSelectDialog::customStateChanged(int state)
 {
     bool enable = (state == Qt::Checked);
     customLexiconLine->setEnabled(enable);
@@ -316,11 +321,10 @@ LexiconSelectDialog::customStateChanged(int state)
 //
 //! Called when the Browse button for the custom lexicon is clicked.
 //---------------------------------------------------------------------------
-void
-LexiconSelectDialog::customBrowseButtonClicked()
+void LexiconSelectDialog::customBrowseButtonClicked()
 {
     QString file = QFileDialog::getOpenFileName(this, IMPORT_CHOOSER_TITLE,
-        Auxil::getWordsDir(), "All Files (*.*)");
+                                                Auxil::getWordsDir(), "All Files (*.*)");
 
     if (!file.isNull())
         customLexiconLine->setText(file);
@@ -333,16 +337,17 @@ LexiconSelectDialog::customBrowseButtonClicked()
 //! check box and disable it so it cannot be unchecked.  Also enable all other
 //! check boxes.
 //---------------------------------------------------------------------------
-void
-LexiconSelectDialog::defaultLexiconChanged()
+void LexiconSelectDialog::defaultLexiconChanged()
 {
     QString defaultLexicon = getDefaultLexicon();
-    QMapIterator<QString, QCheckBox*> it (lexiconCheckBoxes);
-    while (it.hasNext()) {
+    QMapIterator<QString, QCheckBox *> it(lexiconCheckBoxes);
+    while (it.hasNext())
+    {
         it.next();
-        const QString& lexicon = it.key();
-        QCheckBox* checkBox = it.value();
-        if (lexicon == defaultLexicon) {
+        const QString &lexicon = it.key();
+        QCheckBox *checkBox = it.value();
+        if (lexicon == defaultLexicon)
+        {
             checkBox->setCheckState(Qt::Checked);
             checkBox->setEnabled(false);
         }

@@ -10,7 +10,7 @@ Windows 64-bit:  MinGW 8.1.0
 macOS:           Apple clang version 12.0.5
                  Built by Anand Buddhdev
 
- NEW:  Lexicon update to CSW21.
+ NEW:  Lexicon update to CSW24.
  NEW:  All prior CSW lexicons removed due to word expurgations.
 
  Fixed:  Limit By Playability Order search. (083bc0a8)

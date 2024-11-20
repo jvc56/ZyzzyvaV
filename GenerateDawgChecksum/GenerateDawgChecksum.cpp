@@ -30,27 +30,27 @@
 #include <QString>
 #include <QStringList>
 
+static const QString dawgFileName = "J:\\VM_guests_shared\\Kubuntu 64-bit (development)\\Zyzzyva\\CSW24-R.dwg";
 
-static const QString dawgFileName = "J:\\VM_guests_shared\\Kubuntu 64-bit (development)\\Zyzzyva\\CSW21-R.dwg";
-
-qint32 importDawgFile(const QString& filename)
+qint32 importDawgFile(const QString &filename)
 {
-    QFile file (filename);
-    if (!file.open(QIODevice::ReadOnly)) {
+    QFile file(filename);
+    if (!file.open(QIODevice::ReadOnly))
+    {
         return 0;
     }
 
     qint32 checksum;
-    qint32* dawg;
+    qint32 *dawg;
     qint32 numEdges;
-    qint32* p = &numEdges;
-    char* cp = (char*) p;
+    qint32 *p = &numEdges;
+    char *cp = (char *)p;
     file.read(cp, 1 * sizeof(qint32));
 
     dawg = new qint32[numEdges + 1];
     dawg[0] = 0;
     p = &dawg[1];
-    cp = (char*) p;
+    cp = (char *)p;
     file.read(cp, numEdges * sizeof(qint32));
 
     checksum = qChecksum(cp, numEdges);

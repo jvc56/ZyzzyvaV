@@ -33,51 +33,49 @@
 class WordEngineTest : public QObject
 {
     Q_OBJECT
-    public:
-    WordEngineTest() : prepared(false) { }
+public:
+    WordEngineTest() : prepared(false) {}
 
-    private slots:
+private slots:
     void testSearch_data();
     void testSearch();
 
-    private:
+private:
     void tryImport();
 
-    private:
+private:
     WordEngine engine;
     bool prepared;
-
 };
 
-QString TEST_LEXICON = Defs::LEXICON_CSW21;
+QString TEST_LEXICON = Defs::LEXICON_CSW24;
 
 //---------------------------------------------------------------------------
 //  tryImport
 //
-//! Try to import CSW21 lexicon into the WordEngine.
+//! Try to import CSW24 lexicon into the WordEngine.
 //---------------------------------------------------------------------------
-void
-WordEngineTest::tryImport()
+void WordEngineTest::tryImport()
 {
     if (prepared)
         return;
 
     bool ok = engine.importDawgFile(Auxil::getWordsDir() +
-                                    "/British/CSW21.dwg",
+                                        "/British/CSW24.dwg",
                                     Defs::LEXICON_CUSTOM, false);
     if (!ok)
         return;
 
     ok = engine.importDawgFile(Auxil::getWordsDir() +
-                               "/British/CSW21-R.dwg",
+                                   "/British/CSW24-R.dwg",
                                Defs::LEXICON_CUSTOM, true);
     if (!ok)
         return;
 
     engine.importStems(TEST_LEXICON, Auxil::getWordsDir() +
-                       "/British/6-letter-stems.txt");
+                                         "/British/6-letter-stems.txt");
     engine.importStems(TEST_LEXICON, Auxil::getWordsDir() +
-                       "/British/7-letter-stems.txt");
+                                         "/British/7-letter-stems.txt");
 
     MainSettings::setLetterDistribution("A:9 B:2 C:2 D:4 E:12 F:2 G:3 H:2 "
                                         "I:9 J:1 K:1 L:4 M:2 N:6 O:8 P:2 "
@@ -92,8 +90,7 @@ WordEngineTest::tryImport()
 //
 //! Set up data files for search tests.
 //---------------------------------------------------------------------------
-void
-WordEngineTest::testSearch_data()
+void WordEngineTest::testSearch_data()
 {
     QTest::addColumn<QString>("testName");
 
@@ -105,13 +102,12 @@ WordEngineTest::testSearch_data()
     QTest::newRow("subanagram-aeiprs") << "subanagram-aeiprs";
     QTest::newRow("4s-take-A-prefix") << "4s-take-A-prefix";
     QTest::newRow("3s-8s-take-X-suffix") << "3s-8s-take-X-suffix";
-    QTest::newRow("Q-no-U-new-in-CSW21") << "Q-no-U-new-in-CSW21";
+    QTest::newRow("Q-no-U-new-in-CSW24") << "Q-no-U-new-in-CSW24";
     QTest::newRow("8s-with-5-vowels") << "8s-with-5-vowels";
     QTest::newRow("8s-with-7-anagrams") << "8s-with-7-anagrams";
     QTest::newRow("8s-prob-1001-2000") << "8s-prob-1001-2000";
     QTest::newRow("anagram-Z-vowel-vowel") << "anagram-Z-vowel-vowel";
     QTest::newRow("pattern-vowel-D-vowel") << "pattern-vowel-D-vowel";
-
 }
 
 //---------------------------------------------------------------------------
@@ -119,8 +115,7 @@ WordEngineTest::testSearch_data()
 //
 //! Test search results.
 //---------------------------------------------------------------------------
-void
-WordEngineTest::testSearch()
+void WordEngineTest::testSearch()
 {
     tryImport();
 
@@ -129,7 +124,7 @@ WordEngineTest::testSearch()
     QString resultFilename = testName + ".txt";
 
     // Create a SearchSpec from a test file
-    QFile testFile (Auxil::getRootDir() + "/src/tests/data/" + testFilename);
+    QFile testFile(Auxil::getRootDir() + "/src/tests/data/" + testFilename);
     if (!testFile.open(QIODevice::ReadOnly | QIODevice::Text))
         QFAIL("Cannot open test file");
 
@@ -149,13 +144,14 @@ WordEngineTest::testSearch()
         QFAIL("Error in test file");
 
     // Get a list of expected results
-    QFile resultFile (Auxil::getRootDir() + "/src/tests/data/" +
-                      resultFilename);
+    QFile resultFile(Auxil::getRootDir() + "/src/tests/data/" +
+                     resultFilename);
     if (!resultFile.open(QIODevice::ReadOnly | QIODevice::Text))
         QFAIL("Cannot open result file");
 
     QStringList expectedResults;
-    while (!resultFile.atEnd()) {
+    while (!resultFile.atEnd())
+    {
         expectedResults.append(resultFile.readLine().trimmed());
     }
     qSort(expectedResults);
